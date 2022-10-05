@@ -1,25 +1,50 @@
-var builder = WebApplication.CreateBuilder(args);
+namespace Point.Services.Identity.Api;
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static void Main(string[] args)
+    {
+        var configuration = GetConfiguration();
+        Log.Logger = CreateSerilogLogger(configuration);
+
+        try
+        {
+            Log.Information("Configuring web host ({ApplicationName})...");
+            var host = BuildHost(configuration, args);
+
+            Log.Information("Starting web host ({ApplicationName})...");
+            host.Run();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Program terminated unexpectedly ({ApplicationName})!");
+        }
+    }
+
+    public static IHost BuildHost(IConfiguration configuration, string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+            .ConfigureWebHostDefaults(builder =>
+            {
+                builder.UseStartup<Startup>();
+            })
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseSerilog()
+            .Build();
+
+    private static IConfiguration GetConfiguration()
+    {
+        var aspEnviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        return new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile($"appsettings.{aspEnviroment}.json",
+                optional: false, reloadOnChange: true)
+            .Build();
+    }
+
+    private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
+        => new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
