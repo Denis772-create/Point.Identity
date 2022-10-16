@@ -1,4 +1,6 @@
-﻿namespace Point.Services.Identity.Api;
+﻿using Point.Services.Identity.Api.Extentions;
+
+namespace Point.Services.Identity.Api;
 
 public class Startup
 {
@@ -9,7 +11,11 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-
+        services.AddApiConfiguration()
+            .AddCustomHealthCheck(Configuration)
+            .ConfigureVersions()
+            .ConfigureSwagger()
+            .AddCORS("CORS-Policy");
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -20,7 +26,7 @@ public class Startup
         app.UseSwagger();
         app.UseSwaggerUI(s =>
         {
-            s.SwaggerEndpoint("/swagger/v1/swagger.json", "DF.Delivery API v1");
+            s.SwaggerEndpoint("/swagger/v1/swagger.json", "POINT.Identity API v1");
         });
 
         app.UseEndpoints(endpoints =>

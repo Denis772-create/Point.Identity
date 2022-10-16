@@ -8,4 +8,5 @@ global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using System.Net;
 global using HealthChecks.UI.Client;
 global using Autofac.Extensions.DependencyInjection;
+global using Point.Services.Identity.Api.Infrastructure.Filters;
 
