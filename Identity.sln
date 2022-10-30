@@ -9,11 +9,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4DAC9282-E0C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A73569F1-8EE1-454C-B1F1-39D8AE89EB80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.UnitTests", "tests\Point.Services.Identity.UnitTests\Point.Services.Identity.UnitTests.csproj", "{0B7B7888-BDC6-4227-B458-E8A50186C947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.UnitTests", "tests\Point.Services.Identity.UnitTests\Point.Services.Identity.UnitTests.csproj", "{0B7B7888-BDC6-4227-B458-E8A50186C947}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.IntegrationTests", "tests\Point.Services.Identity.IntegrationTests\Point.Services.Identity.IntegrationTests.csproj", "{B72A476F-DC26-4F35-958D-1597FB9E0932}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.IntegrationTests", "tests\Point.Services.Identity.IntegrationTests\Point.Services.Identity.IntegrationTests.csproj", "{B72A476F-DC26-4F35-958D-1597FB9E0932}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.Infrastructure", "src\Point.Services.Identity.Infrastructure\Point.Services.Identity.Infrastructure.csproj", "{E220BE90-D1C9-4150-B455-A12C799E1752}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Infrastructure", "src\Point.Services.Identity.Infrastructure\Point.Services.Identity.Infrastructure.csproj", "{E220BE90-D1C9-4150-B455-A12C799E1752}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.Domain", "src\Point.Services.Identity.Domain\Point.Services.Identity.Domain.csproj", "{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.Application", "src\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj", "{3B096530-803D-49FD-BAD4-55F286E51676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,14 @@ Global
 		{E220BE90-D1C9-4150-B455-A12C799E1752}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E220BE90-D1C9-4150-B455-A12C799E1752}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E220BE90-D1C9-4150-B455-A12C799E1752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B096530-803D-49FD-BAD4-55F286E51676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B096530-803D-49FD-BAD4-55F286E51676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B096530-803D-49FD-BAD4-55F286E51676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B096530-803D-49FD-BAD4-55F286E51676}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +58,8 @@ Global
 		{0B7B7888-BDC6-4227-B458-E8A50186C947} = {A73569F1-8EE1-454C-B1F1-39D8AE89EB80}
 		{B72A476F-DC26-4F35-958D-1597FB9E0932} = {A73569F1-8EE1-454C-B1F1-39D8AE89EB80}
 		{E220BE90-D1C9-4150-B455-A12C799E1752} = {4DAC9282-E0CA-45E5-BB36-6A09BC7F8B3D}
+		{E5C03F70-A8C9-451C-BBB9-51840B90B9BD} = {4DAC9282-E0CA-45E5-BB36-6A09BC7F8B3D}
+		{3B096530-803D-49FD-BAD4-55F286E51676} = {4DAC9282-E0CA-45E5-BB36-6A09BC7F8B3D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {411922E6-F896-466E-8D24-51CF2413752B}

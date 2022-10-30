@@ -1,4 +1,4 @@
-﻿using Point.Services.Identity.Api.Extentions;
+﻿using Point.Services.Identity.Application.Configuration;
 
 namespace Point.Services.Identity.Api;
 
@@ -11,6 +11,18 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        var rootConfiguration = CreateRootConfiguration();
+        services.AddSingleton(rootConfiguration);
+
+        // Register DbContexts for IdentityServer and Identity
+        services.RegisterDbContexts<AdminIdentityDbContext, IdentityServerConfigurationDbContext,
+            IdentityServerPersistedGrantDbContext, IdentityServerDataProtectionDbContext>(Configuration);
+
+        // Add services for authentication, including Identity model and external providers
+        services.AddAuthenticationServices<AdminIdentityDbContext, UserIdentity, UserIdentityRole>(Configuration);
+        services.AddIdentityServer<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, UserIdentity>(Configuration);
+
+
         services.AddApiConfiguration()
             .AddCustomHealthCheck(Configuration)
             .ConfigureVersions()
@@ -20,8 +32,23 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseHttpsRedirection();
+        app.UseCookiePolicy();
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseHsts();
+        }
+        app.UseStaticFiles();
+
+        app.UseIdentityServer();
+
         app.UseRouting();
+        app.UseAuthorization();
+
         app.UseSerilogRequestLogging();
         app.UseSwagger();
         app.UseSwaggerUI(s =>
@@ -42,6 +69,14 @@ public class Startup
                 Predicate = healthCheckRegistration => healthCheckRegistration.Name.Contains("self")
             });
         });
+    }
+
+    protected IRootConfiguration CreateRootConfiguration()
+    {
+        var rootConfiguration = new RootConfiguration();
+        Configuration.GetSection(ConfigurationConsts.AdminConfigurationKey).Bind(rootConfiguration.AdminConfiguration);
+        Configuration.GetSection(ConfigurationConsts.RegisterConfigurationKey).Bind(rootConfiguration.RegisterConfiguration);
+        return rootConfiguration;
     }
 }
 

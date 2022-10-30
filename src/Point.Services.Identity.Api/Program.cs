@@ -2,27 +2,38 @@ namespace Point.Services.Identity.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var configuration = GetConfiguration();
-        Log.Logger = CreateSerilogLogger(configuration);
+
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
 
         try
         {
             Log.Information("Configuring web host ({ApplicationName})...");
-            var host = BuildHost(configuration, args);
+            var host = BuildHost(args);
 
             Log.Information("Starting web host ({ApplicationName})...");
-            host.Run();
+            await host.RunAsync();
         }
         catch (Exception ex)
         {
             Log.Fatal(ex, "Program terminated unexpectedly ({ApplicationName})!");
         }
+        finally
+        {
+            await Log.CloseAndFlushAsync();
+        }
     }
 
-    public static IHost BuildHost(IConfiguration configuration, string[] args) =>
+    public static IHost BuildHost(string[] args) =>
         Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(config =>
+            {
+                config.AddEnvironmentVariables();
+            })
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureWebHostDefaults(builder =>
             {
@@ -34,17 +45,12 @@ public class Program
 
     private static IConfiguration GetConfiguration()
     {
-        var aspEnviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         return new ConfigurationBuilder()
             .AddEnvironmentVariables()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile($"appsettings.{aspEnviroment}.json",
+            .AddJsonFile($"appsettings.{env}.json",
                 optional: false, reloadOnChange: true)
             .Build();
     }
-
-    private static Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
-        => new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration)
-            .CreateLogger();
 }

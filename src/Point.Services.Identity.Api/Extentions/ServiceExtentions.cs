@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Api.Helpers;
-
-namespace Point.Services.Identity.Api.Extentions;
+﻿namespace Point.Services.Identity.Api.Extentions;
 
 public static class ServiceExtentions
 {
@@ -79,5 +77,122 @@ public static class ServiceExtentions
                 HealthStatus.Unhealthy,
                 new string[] { "identity-db" })
             .Services;
+
+    public static void RegisterDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext,
+        TDataProtectionDbContext>(this IServiceCollection services, IConfiguration configuration)
+        where TIdentityDbContext : DbContext
+        where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
+        where TConfigurationDbContext : DbContext, IAdminConfigurationDbContext
+        where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
+    {
+        var identityConnectionString = configuration.GetConnectionString(ConfigurationConsts.IdentityDbConnectionStringKey);
+        var configurationConnectionString = configuration.GetConnectionString(ConfigurationConsts.ConfigurationDbConnectionStringKey);
+        var persistedGrantsConnectionString = configuration.GetConnectionString(ConfigurationConsts.PersistedGrantDbConnectionStringKey);
+        var dataProtectionConnectionString = configuration.GetConnectionString(ConfigurationConsts.DataProtectionDbConnectionStringKey);
+
+        services.RegisterSqlServerDbContexts<TIdentityDbContext, TConfigurationDbContext,
+            TPersistedGrantDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, dataProtectionConnectionString);
+    }
+
+    public static void AddAuthenticationServices<TIdentityDbContext, TUserIdentity, TUserIdentityRole>(
+        this IServiceCollection services, IConfiguration configuration)
+        where TIdentityDbContext : DbContext
+        where TUserIdentity : class
+        where TUserIdentityRole : class
+    {
+        var loginConfiguration = GetLoginConfiguration(configuration);
+        var registrationConfiguration = GetRegistrationConfiguration(configuration);
+        var identityOptions = configuration.GetSection(nameof(IdentityOptions))
+            .Get<IdentityOptions>() ?? new IdentityOptions();
+
+        services
+            .AddSingleton(registrationConfiguration)
+            .AddSingleton(loginConfiguration)
+            .AddSingleton(identityOptions)
+            .AddScoped<ApplicationSignInManager<TUserIdentity>>()
+            .AddScoped<UserResolver<TUserIdentity>>()
+            .AddIdentity<TUserIdentity, TUserIdentityRole>(options => configuration.GetSection(nameof(IdentityOptions)).Bind(options))
+            .AddEntityFrameworkStores<TIdentityDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+            options.Secure = CookieSecurePolicy.SameAsRequest;
+            options.OnAppendCookie = cookieContext =>
+                AuthenticationHelpers.CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+            options.OnDeleteCookie = cookieContext =>
+                AuthenticationHelpers.CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+        });
+
+        var authenticationBuilder = services.AddAuthentication();
+
+        AddExternalProviders(authenticationBuilder, configuration);
+    }
+
+    private static void AddExternalProviders(AuthenticationBuilder authenticationBuilder,
+        IConfiguration configuration)
+    {
+        // TODO: delete it for production
+        var externalProviderConfiguration = configuration.GetSection(nameof(ExternalProvidersConfiguration))
+            .Get<ExternalProvidersConfiguration>();
+
+        if (externalProviderConfiguration.UseGitHubProvider)
+        {
+            authenticationBuilder.AddGitHub(options =>
+            {
+                options.ClientId = externalProviderConfiguration.GitHubClientId;
+                options.ClientSecret = externalProviderConfiguration.GitHubClientSecret;
+                options.CallbackPath = externalProviderConfiguration.GitHubCallbackPath;
+                options.Scope.Add("user:email");
+            });
+        }
+
+        // add here any External provider
+    }
+
+    private static LoginConfiguration GetLoginConfiguration(IConfiguration configuration)
+    {
+        var loginConfiguration = configuration.GetSection(nameof(LoginConfiguration))
+            .Get<LoginConfiguration>();
+
+        return loginConfiguration ?? new LoginConfiguration();
+    }
+
+    private static RegisterConfiguration GetRegistrationConfiguration(IConfiguration configuration)
+    {
+        var registerConfiguration = configuration.GetSection(nameof(RegisterConfiguration))
+            .Get<RegisterConfiguration>();
+
+        return registerConfiguration ?? new RegisterConfiguration();
+    }
+
+    public static IIdentityServerBuilder AddIdentityServer<TConfigurationDbContext, TPersistedGrantDbContext,
+        TUserIdentity>(
+        this IServiceCollection services,
+        IConfiguration configuration)
+        where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
+        where TConfigurationDbContext : DbContext, IAdminConfigurationDbContext
+        where TUserIdentity : class
+    {
+        var configurationSection = configuration.GetSection(nameof(IdentityServerOptions));
+        var identityServerOptions = configurationSection.Get<IdentityServerOptions>();
+
+        var builder = services.AddIdentityServer(opt => 
+                configurationSection.Bind(opt))
+            .AddConfigurationStore<TConfigurationDbContext>()
+            .AddOperationalStore<TPersistedGrantDbContext>()
+            .AddAspNetIdentity<TUserIdentity>();
+
+        if (false)
+        {
+            builder.AddCustomSigningCredential(configuration);
+            builder.AddCustomValidationKey(configuration);
+        }
+
+        builder.AddExtensionGrantValidator<DelegationGrantValidator>();
+
+        return builder;
+    }
 }
 
