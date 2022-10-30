@@ -1,8 +1,8 @@
 ﻿namespace Point.Services.Identity.Infrastructure.DbContexts;
 
-public class AdminIdentityDbContext : IdentityDbContext<UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, UserIdentityUserRole, UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken>
+public class AspIdentityDbContext : IdentityDbContext<UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, UserIdentityUserRole, UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken>
 {
-    public AdminIdentityDbContext(DbContextOptions<AdminIdentityDbContext> options) : base(options)
+    public AspIdentityDbContext(DbContextOptions<AspIdentityDbContext> options) : base(options)
     { }
 
     protected override void OnModelCreating(ModelBuilder builder)

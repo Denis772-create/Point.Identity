@@ -176,19 +176,12 @@ public static class ServiceExtentions
         where TUserIdentity : class
     {
         var configurationSection = configuration.GetSection(nameof(IdentityServerOptions));
-        var identityServerOptions = configurationSection.Get<IdentityServerOptions>();
 
-        var builder = services.AddIdentityServer(opt => 
+        var builder = services.AddIdentityServer(opt =>
                 configurationSection.Bind(opt))
             .AddConfigurationStore<TConfigurationDbContext>()
             .AddOperationalStore<TPersistedGrantDbContext>()
             .AddAspNetIdentity<TUserIdentity>();
-
-        if (false)
-        {
-            builder.AddCustomSigningCredential(configuration);
-            builder.AddCustomValidationKey(configuration);
-        }
 
         builder.AddExtensionGrantValidator<DelegationGrantValidator>();
 

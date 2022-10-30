@@ -15,11 +15,11 @@ public class Startup
         services.AddSingleton(rootConfiguration);
 
         // Register DbContexts for IdentityServer and Identity
-        services.RegisterDbContexts<AdminIdentityDbContext, IdentityServerConfigurationDbContext,
-            IdentityServerPersistedGrantDbContext, IdentityServerDataProtectionDbContext>(Configuration);
+        services.RegisterDbContexts<AspIdentityDbContext, IdentityServerConfigurationDbContext,
+            IdentityServerPersistedGrantDbContext, ProtectionDbContext>(Configuration);
 
         // Add services for authentication, including Identity model and external providers
-        services.AddAuthenticationServices<AdminIdentityDbContext, UserIdentity, UserIdentityRole>(Configuration);
+        services.AddAuthenticationServices<AspIdentityDbContext, UserIdentity, UserIdentityRole>(Configuration);
         services.AddIdentityServer<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, UserIdentity>(Configuration);
 
 

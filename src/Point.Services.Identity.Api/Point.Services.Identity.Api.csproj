@@ -18,6 +18,10 @@
     <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Skoruba.IdentityServer4.Admin.EntityFramework" Version="2.1.0" />
@@ -37,12 +41,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj" />
+    <ProjectReference Include="..\Point.Services.Identity.Infrastructure\Point.Services.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj" />
-    <ProjectReference Include="..\Point.Services.Identity.Infrastructure\Point.Services.Identity.Infrastructure.csproj" />
+    <Folder Include="Controllers\Api\" />
   </ItemGroup>
 
 </Project>

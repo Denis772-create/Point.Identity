@@ -16,7 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Folder Include="Migrations\DataProtection\" />
+    <Folder Include="Migrations\IdentityServerConfiguration\" />
+    <Folder Include="Migrations\IdentityServerGrants\" />
+    <Folder Include="Migrations\Identity\" />
   </ItemGroup>
 
   <ItemGroup>
