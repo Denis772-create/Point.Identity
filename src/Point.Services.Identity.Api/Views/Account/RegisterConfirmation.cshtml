@@ -1,0 +1,11 @@
+﻿@inject IViewLocalizer Localizer
+@model Point.Services.Identity.Api.ViewModels.Account.RegisterConfirmationViewModel
+@{
+    ViewData["Title"] = Localizer["ConfirmEmailTitle"];
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    @Localizer["VerificationSent"]
+</p>

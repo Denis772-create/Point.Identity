@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Point.Services.Identity.Api.ViewModels.Account;
+﻿namespace Point.Services.Identity.Api.ViewModels.Account;
 
 public class RegisterViewModel
 {

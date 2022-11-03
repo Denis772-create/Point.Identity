@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Application.Configuration;
-
-namespace Point.Services.Identity.Api;
+﻿namespace Point.Services.Identity.Api;
 
 public class Startup
 {
@@ -22,6 +20,9 @@ public class Startup
         services.AddAuthenticationServices<AspIdentityDbContext, UserIdentity, UserIdentityRole>(Configuration);
         services.AddIdentityServer<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, UserIdentity>(Configuration);
 
+        RegisterHstsOptions(services);
+
+        services.AddMvcWithLocalization<UserIdentity, Guid>(Configuration);
 
         services.AddApiConfiguration()
             .AddCustomHealthCheck(Configuration)
@@ -59,6 +60,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapDefaultControllerRoute();
             endpoints.MapHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
@@ -71,6 +73,7 @@ public class Startup
         });
     }
 
+
     protected IRootConfiguration CreateRootConfiguration()
     {
         var rootConfiguration = new RootConfiguration();
@@ -78,5 +81,14 @@ public class Startup
         Configuration.GetSection(ConfigurationConsts.RegisterConfigurationKey).Bind(rootConfiguration.RegisterConfiguration);
         return rootConfiguration;
     }
-}
 
+    public virtual void RegisterHstsOptions(IServiceCollection services)
+    {
+        services.AddHsts(options =>
+        {
+            options.Preload = true;
+            options.IncludeSubDomains = true;
+            options.MaxAge = TimeSpan.FromDays(365);
+        });
+    }
+}

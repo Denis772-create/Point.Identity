@@ -1,4 +1,9 @@
-﻿namespace Point.Services.Identity.Api.Extentions;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Globalization;
+
+namespace Point.Services.Identity.Api.Extentions;
 
 public static class ServiceExtentions
 {
@@ -186,6 +191,57 @@ public static class ServiceExtentions
         builder.AddExtensionGrantValidator<DelegationGrantValidator>();
 
         return builder;
+    }
+
+    public static IMvcBuilder AddMvcWithLocalization<TUser, TKey>(this IServiceCollection services,
+        IConfiguration configuration)
+        where TUser : IdentityUser<TKey>
+        where TKey : IEquatable<TKey>
+    {
+        services.AddLocalization(opts => { opts.ResourcesPath = ConfigurationConsts.ResourcesPath; });
+
+        services.TryAddTransient(typeof(IGenericLocalizer<>), typeof(GenericLocalizer<>));
+
+        var mvcBuilder = services.AddControllersWithViews(o =>
+        {
+            o.Conventions.Add(new GenericControllerRouteConvention());
+        })
+          .AddViewLocalization(
+              LanguageViewLocationExpanderFormat.Suffix,
+              opts => { opts.ResourcesPath = ConfigurationConsts.ResourcesPath; })
+          .AddDataAnnotationsLocalization()
+          .ConfigureApplicationPartManager(m =>
+          {
+              m.FeatureProviders.Add(new GenericTypeControllerFeatureProvider<TUser, TKey>());
+          });
+
+
+        var cultureConfiguration = configuration.GetSection(nameof(CultureConfiguration))
+            .Get<CultureConfiguration>();
+        services.Configure<RequestLocalizationOptions>(opts =>
+        {
+            var supportedCultureCodes = (cultureConfiguration?.Cultures?.Count > 0
+                ? cultureConfiguration.Cultures.Intersect(CultureConfiguration.AvailableCultures)
+                : CultureConfiguration.AvailableCultures).ToArray();
+
+            if (!supportedCultureCodes.Any())
+                supportedCultureCodes = CultureConfiguration.AvailableCultures;
+
+            var supportedCultures = supportedCultureCodes.Select(c => new CultureInfo(c)).ToList();
+
+            var defaultCultureCode = string.IsNullOrEmpty(cultureConfiguration?.DefaultCulture)
+                ? CultureConfiguration.DefaultRequestCulture
+                : cultureConfiguration.DefaultCulture;
+
+            if (!supportedCultureCodes.Contains(defaultCultureCode))
+                defaultCultureCode = supportedCultureCodes.FirstOrDefault();
+
+            opts.DefaultRequestCulture = new RequestCulture(defaultCultureCode);
+            opts.SupportedCultures = supportedCultures;
+            opts.SupportedUICultures = supportedCultures;
+        });
+
+        return mvcBuilder;
     }
 }
 

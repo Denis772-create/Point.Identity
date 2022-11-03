@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Api", "src\Point.Services.Identity.Api\Point.Services.Identity.Api.csproj", "{2286F156-811D-445A-A45F-7E79F8115714}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Web", "src\Point.Services.Identity.Api\Point.Services.Identity.Web.csproj", "{2286F156-811D-445A-A45F-7E79F8115714}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4DAC9282-E0CA-45E5-BB36-6A09BC7F8B3D}"
 EndProject
@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Int
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Infrastructure", "src\Point.Services.Identity.Infrastructure\Point.Services.Identity.Infrastructure.csproj", "{E220BE90-D1C9-4150-B455-A12C799E1752}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.Domain", "src\Point.Services.Identity.Domain\Point.Services.Identity.Domain.csproj", "{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Domain", "src\Point.Services.Identity.Domain\Point.Services.Identity.Domain.csproj", "{E5C03F70-A8C9-451C-BBB9-51840B90B9BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.Application", "src\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj", "{3B096530-803D-49FD-BAD4-55F286E51676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Application", "src\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj", "{3B096530-803D-49FD-BAD4-55F286E51676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

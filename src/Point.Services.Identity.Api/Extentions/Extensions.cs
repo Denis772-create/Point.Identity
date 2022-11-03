@@ -1,6 +1,4 @@
-﻿using IdentityServer4.Models;
-
-namespace Point.Services.Identity.Api.Extentions;
+﻿namespace Point.Services.Identity.Api.Extentions;
 
 public static class Extensions
 {

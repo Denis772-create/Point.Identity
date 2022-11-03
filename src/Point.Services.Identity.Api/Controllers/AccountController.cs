@@ -1,18 +1,4 @@
-﻿using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Extensions;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.WebUtilities;
-using Point.Services.Identity.Api.Configuration;
-using Point.Services.Identity.Infrastructure.Localization;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-
-namespace Point.Services.Identity.Api.Controllers;
+﻿namespace Point.Services.Identity.Api.Controllers;
 
 [Authorize]
 [SecurityHeaders]
@@ -470,6 +456,23 @@ public class AccountController<TUser> : Controller
 
         return View(model);
     }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RegisterWithoutUsername(RegisterWithoutUsernameViewModel model, string returnUrl = null)
+    {
+        var registerModel = new RegisterViewModel
+        {
+            UserName = model.Email,
+            Email = model.Email,
+            Password = model.Password,
+            ConfirmPassword = model.ConfirmPassword
+        };
+
+        return await Register(registerModel, returnUrl, true);
+    }
+
 
     private void AddErrors(IdentityResult result)
     {

@@ -47,6 +47,19 @@
 
   <ItemGroup>
     <Folder Include="Controllers\AdminApi\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\dist\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\dist\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\dist\fonts\open-iconic.svg" />
+    <None Include="wwwroot\dist\js\bundle.min.js" />
+    <None Include="wwwroot\js\forgot-password.js" />
+    <None Include="wwwroot\js\qrcode.js" />
+    <None Include="wwwroot\js\qrcode.min.js" />
+    <None Include="wwwroot\js\signin-redirect.js" />
+    <None Include="wwwroot\js\signout-redirect.js" />
   </ItemGroup>
 
 </Project>
