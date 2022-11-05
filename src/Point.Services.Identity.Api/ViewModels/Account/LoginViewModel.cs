@@ -1,6 +1,6 @@
 ﻿using static System.String;
 
-namespace Point.Services.Identity.Api.ViewModels.Account;
+namespace Point.Services.Identity.Web.ViewModels.Account;
 
 public class LoginViewModel : LoginInputModel
 {

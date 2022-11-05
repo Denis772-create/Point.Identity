@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Api.Configuration.Constants;
+﻿namespace Point.Services.Identity.Web.Configuration.Constants;
 
 public class ConfigurationConsts
 {

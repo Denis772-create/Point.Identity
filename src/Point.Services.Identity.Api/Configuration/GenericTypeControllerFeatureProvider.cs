@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Api.Configuration;
+﻿namespace Point.Services.Identity.Web.Configuration;
 
 public class GenericTypeControllerFeatureProvider<TUser, TKey> : IApplicationFeatureProvider<ControllerFeature>
     where TUser : IdentityUser<TKey>

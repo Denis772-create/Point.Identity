@@ -1,4 +1,8 @@
-﻿namespace Point.Services.Identity.Api.Controllers;
+﻿using Point.Services.Identity.Web.Helpers;
+using Point.Services.Identity.Web.Infrastructure.Filters;
+using Point.Services.Identity.Web.ViewModels.Home;
+
+namespace Point.Services.Identity.Web.Controllers;
 
 [SecurityHeaders]
 public class HomeController : Controller

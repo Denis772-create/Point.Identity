@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Api.Helpers;
+﻿namespace Point.Services.Identity.Web.Helpers;
 
 public static class LoginPolicyResolutionLocalizer
 {

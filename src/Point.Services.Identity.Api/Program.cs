@@ -1,4 +1,4 @@
-namespace Point.Services.Identity.Api;
+namespace Point.Services.Identity.Web;
 
 public class Program
 {

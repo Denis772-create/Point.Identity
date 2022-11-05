@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Globalization;
+﻿using Point.Services.Identity.Web.Configuration;
+using Point.Services.Identity.Web.Configuration.Constants;
+using Point.Services.Identity.Web.Helpers;
+using Point.Services.Identity.Web.Infrastructure.Filters;
 
-namespace Point.Services.Identity.Api.Extentions;
+namespace Point.Services.Identity.Web.Extentions;
 
 public static class ServiceExtentions
 {
+    public static void UseMvcLocalizationServices(this IApplicationBuilder app)
+    {
+        var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+        app.UseRequestLocalization(options!.Value);
+    }
+
     public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
     => services.AddOptions()
                .AddControllers(opt =>

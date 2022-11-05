@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-namespace Point.Services.Identity.Api.Configuration;
+namespace Point.Services.Identity.Web.Configuration;
 
 public class GenericControllerRouteConvention : IControllerModelConvention
 {

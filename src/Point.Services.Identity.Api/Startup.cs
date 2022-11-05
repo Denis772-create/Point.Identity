@@ -1,4 +1,7 @@
-﻿namespace Point.Services.Identity.Api;
+﻿using Point.Services.Identity.Web.Configuration.Constants;
+using Point.Services.Identity.Web.Extentions;
+
+namespace Point.Services.Identity.Web;
 
 public class Startup
 {
@@ -43,9 +46,14 @@ public class Startup
         {
             app.UseHsts();
         }
+
+        app.UsePathBase(Configuration.GetValue<string>("BasePath"));
+
         app.UseStaticFiles();
 
         app.UseIdentityServer();
+
+        app.UseMvcLocalizationServices();
 
         app.UseRouting();
         app.UseAuthorization();

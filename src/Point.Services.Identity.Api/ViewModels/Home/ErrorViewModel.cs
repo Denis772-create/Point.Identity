@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Api.ViewModels.Home;
+﻿namespace Point.Services.Identity.Web.ViewModels.Home;
 
 public class ErrorViewModel
 {

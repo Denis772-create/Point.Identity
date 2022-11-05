@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Api.Infrastructure.ActionResults;
+﻿namespace Point.Services.Identity.Web.Infrastructure.ActionResults;
 
 public class InternalServerErrorObjectResult : ObjectResult
 {

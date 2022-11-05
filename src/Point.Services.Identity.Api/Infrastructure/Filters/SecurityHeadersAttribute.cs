@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Api.Infrastructure.Filters;
+﻿namespace Point.Services.Identity.Web.Infrastructure.Filters;
 
 public class SecurityHeadersAttribute : ActionFilterAttribute
 {
