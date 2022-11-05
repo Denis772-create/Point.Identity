@@ -1,6 +1,5 @@
 ﻿using Point.Services.Identity.Web.Configuration;
 using Point.Services.Identity.Web.Extentions;
-using Point.Services.Identity.Web.Infrastructure.Filters;
 using Point.Services.Identity.Web.ViewModels.Account;
 
 namespace Point.Services.Identity.Web.Controllers;

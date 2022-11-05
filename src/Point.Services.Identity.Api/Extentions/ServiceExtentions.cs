@@ -1,7 +1,5 @@
 ﻿using Point.Services.Identity.Web.Configuration;
-using Point.Services.Identity.Web.Configuration.Constants;
 using Point.Services.Identity.Web.Helpers;
-using Point.Services.Identity.Web.Infrastructure.Filters;
 
 namespace Point.Services.Identity.Web.Extentions;
 

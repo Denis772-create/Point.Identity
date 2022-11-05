@@ -21,4 +21,6 @@ public class ConfigurationConsts
     public const string AdvancedConfigurationKey = "AdvancedConfiguration";
 
     public const string CspTrustedDomainsKey = "CspTrustedDomains";
+
+    public const string AdministrationPolicy = "RequireAdministratorRole";
 }

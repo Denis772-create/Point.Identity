@@ -1,5 +1,4 @@
-﻿using Point.Services.Identity.Web.Configuration.Constants;
-using Point.Services.Identity.Web.Extentions;
+﻿using Point.Services.Identity.Web.Extentions;
 
 namespace Point.Services.Identity.Web;
 

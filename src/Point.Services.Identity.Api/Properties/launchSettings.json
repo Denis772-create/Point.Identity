@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Point.Services.Identity.Api": {
+    "Point.Services.Identity.Web": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
