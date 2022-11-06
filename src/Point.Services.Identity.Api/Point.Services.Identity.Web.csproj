@@ -16,7 +16,12 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 
     <PackageReference Include="IdentityModel" Version="6.0.0" />
+
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.Storage" Version="4.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -24,7 +29,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Serilog" Version="2.12.0" />
-    <PackageReference Include="Skoruba.IdentityServer4.Admin.EntityFramework" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
@@ -59,6 +63,21 @@
     <None Include="wwwroot\js\qrcode.min.js" />
     <None Include="wwwroot\js\signin-redirect.js" />
     <None Include="wwwroot\js\signout-redirect.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\ApiErrorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApiErrorResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\ApiErrorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApiErrorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

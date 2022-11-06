@@ -1,6 +1,4 @@
-﻿using Skoruba.IdentityServer4.Admin.EntityFramework.Extensions.Enums;
-
-namespace Point.Services.Identity.Infrastructure.Repositories;
+﻿namespace Point.Services.Identity.Infrastructure.Repositories;
 
 public class ApiResourceRepository<TDbContext> : IApiResourceRepository
     where TDbContext : DbContext, IAdminConfigurationDbContext

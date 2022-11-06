@@ -1,5 +1,7 @@
-﻿using Point.Services.Identity.Web.Configuration;
+﻿using Point.Services.Identity.Infrastructure.Interfaces;
+using Point.Services.Identity.Web.Configuration;
 using Point.Services.Identity.Web.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Point.Services.Identity.Web.Extentions;
 

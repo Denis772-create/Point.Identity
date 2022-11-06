@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.Extentions;
-
-namespace Point.Services.Identity.Web;
+﻿namespace Point.Services.Identity.Web;
 
 public class Startup
 {

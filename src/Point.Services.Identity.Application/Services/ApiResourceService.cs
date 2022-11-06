@@ -1,6 +1,4 @@
-﻿using Skoruba.AuditLogging.Services;
-
-namespace Point.Services.Identity.Application.Services;
+﻿namespace Point.Services.Identity.Application.Services;
 
 public class ApiResourceService : IApiResourceService
 {

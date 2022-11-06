@@ -9,6 +9,16 @@ public static class QueryableExtensions
             : query;
     }
 
+    public static IQueryable<T> TakeIf<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> orderBy,
+        bool condition, int limit, bool orderByDescending = true)
+    {
+        query = orderByDescending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+
+        return condition
+            ? query.Take(limit)
+            : query;
+    }
+
     public static IQueryable<T> PageBy<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> orderBy, int page,
         int pageSize, bool orderByDescending = true)
     {
