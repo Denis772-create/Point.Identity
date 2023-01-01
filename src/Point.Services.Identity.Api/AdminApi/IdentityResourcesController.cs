@@ -52,6 +52,17 @@ public class IdentityResourcesController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id }, identityResourceApi);
     }
 
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] IdentityResourceApiDto identityResourceApi)
+    {
+        var identityResource = identityResourceApi.ToIdentityResourceApiModel<IdentityResourceDto>();
+
+        await _identityResourceService.GetIdentityResourceAsync(identityResource.Id);
+        await _identityResourceService.UpdateIdentityResourceAsync(identityResource);
+
+        return Ok();
+    }
+
     [HttpGet("{id}/Properties")]
     public async Task<ActionResult<IdentityResourcePropertiesApiDto>> GetProperties(int id, int page = 1, int pageSize = 10)
     {
@@ -59,6 +70,17 @@ public class IdentityResourcesController : ControllerBase
         var identityResourcePropertiesApiDto = identityResourcePropertiesDto.ToIdentityResourceApiModel<IdentityResourcePropertiesApiDto>();
 
         return Ok(identityResourcePropertiesApiDto);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var identityResource = new IdentityResourceDto { Id = id };
+
+        await _identityResourceService.GetIdentityResourceAsync(identityResource.Id);
+        await _identityResourceService.DeleteIdentityResourceAsync(identityResource);
+
+        return Ok();
     }
 
     [HttpGet("Properties/{propertyId}")]
@@ -89,4 +111,14 @@ public class IdentityResourcesController : ControllerBase
         return CreatedAtAction(nameof(GetProperty), new { propertyId }, identityResourcePropertyApi);
     }
 
+    [HttpDelete("Properties/{propertyId}")]
+    public async Task<IActionResult> DeleteProperty(int propertyId)
+    {
+        var identityResourceProperty = new IdentityResourcePropertiesDto { IdentityResourcePropertyId = propertyId };
+
+        await _identityResourceService.GetIdentityResourcePropertyAsync(identityResourceProperty.IdentityResourcePropertyId);
+        await _identityResourceService.DeleteIdentityResourcePropertyAsync(identityResourceProperty);
+
+        return Ok();
+    }
 }

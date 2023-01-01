@@ -37,15 +37,15 @@ public class Startup
 
         var profileTypes = new HashSet<Type>
         {
-            typeof(IdentityMapperProfile<IdentityRoleDto, IdentityUserRolesDto, Guid, IdentityUserClaimsDto, IdentityUserClaimDto, IdentityUserProviderDto, IdentityUserProvidersDto, UserChangePasswordDto, IdentityRoleClaimDto, IdentityRoleClaimsDto>)
+            typeof(IdentityMapperProfile<RoleDto, UserRolesDto, Guid, UserClaimsDto, UserClaimDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimDto, RoleClaimsDto>)
         };
 
         services.AddAdminAspNetIdentityServices<AspIdentityDbContext, IdentityServerPersistedGrantDbContext,
-            IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, UserIdentityUserRole,
-            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
-            IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
-            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, UserChangePasswordDto,
-            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(profileTypes);
+            UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, UserIdentityUserRole,
+            UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken,
+            UsersDto, RolesDto, UserRolesDto,
+            UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto,
+            RoleClaimsDto, UserClaimDto, RoleClaimDto>(profileTypes);
 
         services.AddAdminServices<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext>();
 
@@ -53,12 +53,12 @@ public class Startup
 
         services.AddCors(adminApiConfiguration);
 
-        services.AddControllersAndMvcServices<IdentityUserDto, IdentityRoleDto,
+        services.AddControllersAndMvcServices<UserDto, RoleDto,
             UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, UserIdentityUserRole,
-            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
-            IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
-            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, UserChangePasswordDto,
-            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(Configuration);
+            UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken,
+            UsersDto, RolesDto, UserRolesDto,
+            UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto,
+            RoleClaimsDto, UserClaimDto, RoleClaimDto>(Configuration);
 
         RegisterAuthorization(services);
         RegisterHstsOptions(services);

@@ -56,6 +56,37 @@ public class ApiScopeRepository<TDbContext> : IApiScopeRepository
         return apiScopeName;
     }
 
+    public async Task<int> UpdateApiScopeAsync(ApiScope apiScope)
+    {
+        // Remove old relations
+        await RemoveApiScopeClaimsAsync(apiScope);
+
+        // Update with new data
+        DbContext.ApiScopes.Update(apiScope);
+
+        return await AutoSaveChangesAsync();
+    }
+
+    private async Task RemoveApiScopeClaimsAsync(ApiScope apiScope)
+    {
+        //Remove old api scope claims
+        var apiScopeClaims = await DbContext.ApiScopeClaims
+            .Where(x => x.Scope.Id == apiScope.Id)
+            .ToListAsync();
+
+        DbContext.ApiScopeClaims.RemoveRange(apiScopeClaims);
+    }
+
+    public async Task<int> DeleteApiScopeAsync(ApiScope apiScope)
+    {
+        var apiScopeToDelete = await DbContext.ApiScopes.Where(x => x.Id == apiScope.Id).SingleOrDefaultAsync();
+        if (apiScopeToDelete is null) return -1;
+
+        DbContext.ApiScopes.Remove(apiScopeToDelete);
+
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<PagedList<ApiScopeProperty>> GetApiScopeProperties(int apiScopeId, int page = 1, int pageSize = 10)
     {
         var pagedList = new PagedList<ApiScopeProperty>();
@@ -98,6 +129,18 @@ public class ApiScopeRepository<TDbContext> : IApiScopeRepository
             .Where(x => x.Key == apiScopeProperty.Key && x.Scope.Id == apiScopeProperty.Scope.Id)
             .SingleOrDefaultAsync();
         return existsWithSameName == null;
+    }
+
+    public async Task<int> DeleteApiScopePropertyAsync(ApiScopeProperty apiScopeProperty)
+    {
+        var propertyToDelete = await DbContext.ApiScopeProperties
+            .Where(x => x.Id == apiScopeProperty.Id)
+            .SingleOrDefaultAsync();
+
+        if (propertyToDelete == null) return -1;
+
+        DbContext.ApiScopeProperties.Remove(propertyToDelete);
+        return await AutoSaveChangesAsync();
     }
 
     public virtual async Task<bool> CanInsertApiScope(ApiScope apiScope)

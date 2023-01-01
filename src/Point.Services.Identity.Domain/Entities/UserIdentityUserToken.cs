@@ -1,6 +1,6 @@
 ﻿namespace Point.Services.Identity.Domain.Entities;
 
-public class UserIdentityUserToken : IdentityUserToken<Guid>
+public class UserIdentityToken : IdentityUserToken<Guid>
 {
         
 }

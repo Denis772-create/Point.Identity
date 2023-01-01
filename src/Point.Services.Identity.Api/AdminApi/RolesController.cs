@@ -32,22 +32,17 @@ public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
     private readonly IIdentityService<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
         TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
         TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto> _identityService;
-    private readonly IGenericControllerLocalizer<UsersController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
-        TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
-        TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto>> _localizer;
 
     private readonly IMapper _mapper;
     private readonly IApiErrorResources _errorResources;
 
     public RolesController(IIdentityService<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
-            TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
-            TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto> identityService,
-        IGenericControllerLocalizer<UsersController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
-            TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
-            TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto>> localizer, IMapper mapper, IApiErrorResources errorResources)
+            TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto, TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto,
+            TUserClaimDto, TRoleClaimDto> identityService,
+        IMapper mapper,
+        IApiErrorResources errorResources)
     {
         _identityService = identityService;
-        _localizer = localizer;
         _mapper = mapper;
         _errorResources = errorResources;
     }
@@ -55,7 +50,7 @@ public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
     [HttpGet("{id}")]
     public async Task<ActionResult<TRoleDto>> Get(TKey id)
     {
-        var role = await _identityService.GetRoleAsync(id.ToString());
+        var role = await _identityService.GetRoleAsync(id.ToString()!);
 
         return Ok(role);
     }
@@ -79,9 +74,29 @@ public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
         }
 
         var (identityResult, roleId) = await _identityService.CreateRoleAsync(role);
-        var createdRole = await _identityService.GetRoleAsync(roleId.ToString());
+        var createdRole = await _identityService.GetRoleAsync(roleId.ToString()!);
 
         return CreatedAtAction(nameof(Get), new { id = createdRole.Id }, createdRole);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] TRoleDto role)
+    {
+        await _identityService.GetRoleAsync(role.Id.ToString());
+        await _identityService.UpdateRoleAsync(role);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(TKey id)
+    {
+        var roleDto = new TRoleDto { Id = id };
+
+        await _identityService.GetRoleAsync(id.ToString()!);
+        await _identityService.DeleteRoleAsync(roleDto);
+
+        return Ok();
     }
 
     [HttpGet("{id}/Users")]

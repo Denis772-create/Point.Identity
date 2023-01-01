@@ -2,19 +2,19 @@
 
 public class KeyService : IKeyService
 {
-    protected readonly IKeyRepository KeyRepository;
+    protected readonly IKeyRepository _keyRepository;
     protected readonly IKeyServiceResources KeyServiceResources;
 
     public KeyService(IKeyRepository keyRepository, 
         IKeyServiceResources keyServiceResources)
     {
-        KeyRepository = keyRepository;
+        _keyRepository = keyRepository;
         KeyServiceResources = keyServiceResources;
     }
 
     public async Task<KeysDto> GetKeysAsync(int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var keys = await KeyRepository.GetKeys(page, pageSize, cancellationToken);
+        var keys = await _keyRepository.GetKeys(page, pageSize, cancellationToken);
 
         var keysDto = keys.ToModel();
 
@@ -25,7 +25,7 @@ public class KeyService : IKeyService
 
     public async Task<KeyDto> GetKeyAsync(string id, CancellationToken cancellationToken = default)
     {
-        var key = await KeyRepository.GetKey(id, cancellationToken);
+        var key = await _keyRepository.GetKey(id, cancellationToken);
 
         if (key == default)
         {
@@ -41,6 +41,15 @@ public class KeyService : IKeyService
 
     public Task<bool> ExistsKeyAsync(string id, CancellationToken cancellationToken = default)
     {
-        return KeyRepository.ExistsKey(id, cancellationToken);
+        return _keyRepository.ExistsKey(id, cancellationToken);
+    }
+
+    public async Task DeleteKeyAsync(string id, CancellationToken cancellationToken = default)
+    {
+        var key = await GetKeyAsync(id, cancellationToken);
+
+        // TODO: create audit log
+
+        await _keyRepository.DeleteKeyAsync(id, cancellationToken);
     }
 }

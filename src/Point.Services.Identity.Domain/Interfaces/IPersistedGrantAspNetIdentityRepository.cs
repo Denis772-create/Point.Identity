@@ -7,6 +7,10 @@ public interface IPersistedGrantAspNetIdentityRepository
     Task<PersistedGrant?> GetPersistedGrantAsync(string key);
     Task<bool> ExistsPersistedGrantsAsync(string subjectId);
     Task<bool> ExistsPersistedGrantAsync(string key);
+    Task<int> DeletePersistedGrantAsync(string key);
+    Task<int> DeletePersistedGrantsAsync(string userId);
+
+
     Task<int> SaveAllChangesAsync();
     bool AutoSaveChanges { get; set; }
 

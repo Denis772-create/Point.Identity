@@ -43,6 +43,16 @@ public class KeyRepository<TDbContext> : IKeyRepository
             .AnyAsync(cancellationToken: cancellationToken);
     }
 
+    public async Task DeleteKeyAsync(string id, CancellationToken cancellationToken = default)
+    {
+        var keyToDelete = await DbContext.Keys.Where(x => x.Id == id).SingleOrDefaultAsync(cancellationToken: cancellationToken);
+
+        if (keyToDelete is null) return;
+
+        DbContext.Keys.Remove(keyToDelete);
+        await AutoSaveChangesAsync(cancellationToken);
+    }
+
     public virtual async Task<int> SaveAllChanges(CancellationToken cancellationToken = default)
     {
         return await DbContext.SaveChangesAsync(cancellationToken);
@@ -50,8 +60,8 @@ public class KeyRepository<TDbContext> : IKeyRepository
 
     protected virtual async Task<int> AutoSaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return AutoSaveChanges 
-            ? await DbContext.SaveChangesAsync(cancellationToken) 
+        return AutoSaveChanges
+            ? await DbContext.SaveChangesAsync(cancellationToken)
             : (int)SavedStatus.WillBeSavedExplicitly;
     }
 }

@@ -54,6 +54,7 @@ public class ApiScopesController : ControllerBase
         return CreatedAtAction(nameof(GetScope), new { scopeId = id }, apiScope);
     }
 
+
     [HttpGet("Properties/{propertyId}")]
     public async Task<ActionResult<ApiScopePropertyApiDto>> GetProperty(int propertyId)
     {
@@ -72,6 +73,7 @@ public class ApiScopesController : ControllerBase
         return Ok(apiScopePropertiesApiDto);
     }
 
+
     [HttpPost("{id}/Properties")]
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
@@ -89,6 +91,42 @@ public class ApiScopesController : ControllerBase
         apiScopePropertyApi.Id = propertyId;
 
         return CreatedAtAction(nameof(GetProperty), new { propertyId }, apiScopePropertyApi);
+    }
+
+    [HttpDelete("Properties/{propertyId}")]
+    public async Task<IActionResult> DeleteProperty(int propertyId)
+    {
+        var apiScopePropertiesDto = new ApiScopePropertiesDto { ApiScopePropertyId = propertyId };
+
+        await _apiScopeService.GetApiScopePropertyAsync(apiScopePropertiesDto.ApiScopePropertyId);
+        await _apiScopeService.DeleteApiScopePropertyAsync(apiScopePropertiesDto);
+
+        return Ok();
+    }
+
+
+    [HttpPut]
+    public async Task<IActionResult> PutScope([FromBody] ApiScopeApiDto apiScopeApi)
+    {
+        var apiScope = apiScopeApi.ToApiScopeApiModel<ApiScopeDto>();
+
+        await _apiScopeService.GetApiScopeAsync(apiScope.Id);
+
+        await _apiScopeService.UpdateApiScopeAsync(apiScope);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteScope(int id)
+    {
+        var apiScope = new ApiScopeDto { Id = id };
+
+        await _apiScopeService.GetApiScopeAsync(apiScope.Id);
+
+        await _apiScopeService.DeleteApiScopeAsync(apiScope);
+
+        return Ok();
     }
 
 }

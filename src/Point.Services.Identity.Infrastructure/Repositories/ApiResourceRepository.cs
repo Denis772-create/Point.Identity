@@ -9,7 +9,7 @@ public class ApiResourceRepository<TDbContext> : IApiResourceRepository
 
     public ApiResourceRepository(TDbContext dbContext)
     {
-        DbContext = dbContext;
+        DbContext = dbContext ?? throw new ArgumentNullException(typeof(TDbContext).ToString());
     }
 
     public async Task<PagedList<ApiResource>> GetApiResources(string search, int page = 1, int pageSize = 10)
@@ -61,6 +61,19 @@ public class ApiResourceRepository<TDbContext> : IApiResourceRepository
         return apiResource.Id;
     }
 
+    public async Task<int> DeleteApiResourceAsync(ApiResource apiResource)
+    {
+        var resource = await DbContext.ApiResources
+            .Where(x => x.Id == apiResource.Id)
+            .SingleOrDefaultAsync();
+
+        if (resource is null) return -1;
+
+        DbContext.Remove(resource);
+
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<PagedList<ApiResourceSecret>> GetApiSecrets(int apiResourceId, int page = 1, int pageSize = 10)
     {
         var pagedList = new PagedList<ApiResourceSecret>();
@@ -92,6 +105,17 @@ public class ApiResourceRepository<TDbContext> : IApiResourceRepository
     {
         apiSecret.ApiResource = await DbContext.ApiResources.Where(x => x.Id == apiResourceId).SingleOrDefaultAsync();
         await DbContext.ApiSecrets.AddAsync(apiSecret);
+
+        return await AutoSaveChangesAsync();
+    }
+
+    public async Task<int> DeleteApiSecretAsync(ApiResourceSecret apiSecret)
+    {
+        var apiSecretToDelete = await DbContext.ApiSecrets.Where(x => x.Id == apiSecret.Id).SingleOrDefaultAsync();
+
+        if (apiSecretToDelete is null) return -1;
+
+        DbContext.ApiSecrets.Remove(apiSecretToDelete);
 
         return await AutoSaveChangesAsync();
     }
@@ -150,6 +174,16 @@ public class ApiResourceRepository<TDbContext> : IApiResourceRepository
         return await AutoSaveChangesAsync();
     }
 
+    public async Task<int> DeleteApiResourcePropertyAsync(ApiResourceProperty apiResourceProperty)
+    {
+        var propertyToDelete = await DbContext.ApiResourceProperties.Where(x => x.Id == apiResourceProperty.Id).SingleOrDefaultAsync();
+
+        if (propertyToDelete is null) return -1;
+
+        DbContext.ApiResourceProperties.Remove(propertyToDelete);
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<int> SaveAllChangesAsync()
     {
         return await DbContext.SaveChangesAsync();
@@ -163,4 +197,37 @@ public class ApiResourceRepository<TDbContext> : IApiResourceRepository
 
         return apiResourceName;
     }
+
+    public async Task<int> UpdateApiResourceAsync(ApiResource apiResource)
+    {
+        //Remove old relations
+        await RemoveApiResourceClaimsAsync(apiResource);
+        await RemoveApiResourceScopesAsync(apiResource);
+
+        //Update with new data
+        DbContext.ApiResources.Update(apiResource);
+
+        return await AutoSaveChangesAsync();
+    }
+
+    private async Task RemoveApiResourceClaimsAsync(ApiResource apiResource)
+    {
+        //Remove old api resource claims
+        var apiResourceClaims = await DbContext.ApiResourceClaims
+            .Where(x => x.ApiResource.Id == apiResource.Id)
+            .ToListAsync();
+
+        DbContext.ApiResourceClaims.RemoveRange(apiResourceClaims);
+    }
+
+    private async Task RemoveApiResourceScopesAsync(ApiResource apiResource)
+    {
+        //Remove old api resource scopes
+        var apiResourceScopes = await DbContext.ApiResourceScopes
+            .Where(x => x.ApiResource.Id == apiResource.Id)
+            .ToListAsync();
+
+        DbContext.ApiResourceScopes.RemoveRange(apiResourceScopes);
+    }
+
 }

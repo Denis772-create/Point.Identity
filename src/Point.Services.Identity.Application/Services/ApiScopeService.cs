@@ -2,18 +2,18 @@
 
 public class ApiScopeService : IApiScopeService
 {
-    protected readonly IApiScopeRepository ApiScopeRepository;
+    protected readonly IApiScopeRepository _apiScopeRepository;
     protected readonly IApiScopeServiceResources ApiScopeServiceResources;
 
     public ApiScopeService(IApiScopeServiceResources apiScopeServiceResources, IApiScopeRepository apiScopeRepository)
     {
-        ApiScopeRepository = apiScopeRepository;
+        _apiScopeRepository = apiScopeRepository;
         ApiScopeServiceResources = apiScopeServiceResources;
     }
 
     public virtual async Task<ApiScopesDto> GetApiScopesAsync(string search, int page = 1, int pageSize = 10)
     {
-        var pagedList = await ApiScopeRepository.GetApiScopes(search, page, pageSize);
+        var pagedList = await _apiScopeRepository.GetApiScopes(search, page, pageSize);
 
         var apiScopesDto = pagedList.ToModel();
 
@@ -24,12 +24,12 @@ public class ApiScopeService : IApiScopeService
 
     public virtual async Task<ICollection<string>> GetApiScopesNameAsync(string scope, int limit = 0)
     {
-        return await ApiScopeRepository.GetApiScopesName(scope, limit);
+        return await _apiScopeRepository.GetApiScopesName(scope, limit);
     }
 
     public virtual async Task<ApiScopeDto> GetApiScopeAsync(int id)
     {
-        var apiScope = await ApiScopeRepository.GetApiScope(id);
+        var apiScope = await _apiScopeRepository.GetApiScope(id);
         if (apiScope == null)
             throw new UserFriendlyErrorPageException(string.Format(ApiScopeServiceResources.ApiScopeDoesNotExist().Description, id),
                 ApiScopeServiceResources.ApiScopeDoesNotExist().Description);
@@ -50,7 +50,7 @@ public class ApiScopeService : IApiScopeService
 
         var entityScope = scope.ToEntity();
 
-        var added = await ApiScopeRepository.AddApiScope(entityScope);
+        var added = await _apiScopeRepository.AddApiScope(entityScope);
 
         //TODO: to create audit log
 
@@ -61,20 +61,48 @@ public class ApiScopeService : IApiScopeService
     {
         var apiScope = apiScopeDto.ToEntity();
 
-        return await ApiScopeRepository.CanInsertApiScope(apiScope);
+        return await _apiScopeRepository.CanInsertApiScope(apiScope);
+    }
+
+    public async Task<int> UpdateApiScopeAsync(ApiScopeDto apiScope)
+    {
+        var canInsert = await CanInsertApiScopeAsync(apiScope);
+        if (!canInsert)
+            throw new UserFriendlyViewException(string.Format(ApiScopeServiceResources.ApiScopeExistsValue().Description, apiScope.Name), ApiScopeServiceResources.ApiScopeExistsKey().Description, apiScope);
+
+        var scope = apiScope.ToEntity();
+
+        var originalApiScope = await GetApiScopeAsync(apiScope.Id);
+
+        var updated = await _apiScopeRepository.UpdateApiScopeAsync(scope);
+
+        //TODO: to create audit log
+
+        return updated;
+    }
+
+    public async Task<int> DeleteApiScopeAsync(ApiScopeDto apiScope)
+    {
+        var scope = apiScope.ToEntity();
+
+        var deleted = await _apiScopeRepository.DeleteApiScopeAsync(scope);
+
+        //TODO: to create audit log
+
+        return deleted;
     }
 
     public virtual async Task<ApiScopePropertiesDto> GetApiScopePropertiesAsync(int apiScopeId, int page = 1, int pageSize = 10)
     {
-        var apiScope = await ApiScopeRepository.GetApiScope(apiScopeId);
+        var apiScope = await _apiScopeRepository.GetApiScope(apiScopeId);
         if (apiScope == null)
-            throw new UserFriendlyErrorPageException(string.Format(ApiScopeServiceResources.ApiScopeDoesNotExist().Description, apiScopeId), 
+            throw new UserFriendlyErrorPageException(string.Format(ApiScopeServiceResources.ApiScopeDoesNotExist().Description, apiScopeId),
                 ApiScopeServiceResources.ApiScopeDoesNotExist().Description);
 
-        PagedList<ApiScopeProperty> pagedList = await ApiScopeRepository.GetApiScopeProperties(apiScopeId, page, pageSize);
+        PagedList<ApiScopeProperty> pagedList = await _apiScopeRepository.GetApiScopeProperties(apiScopeId, page, pageSize);
         var apiScopePropertiesDto = pagedList.ToModel();
         apiScopePropertiesDto.ApiScopeId = apiScopeId;
-        apiScopePropertiesDto.ApiScopeName = await ApiScopeRepository.GetApiScopeName(apiScopeId);
+        apiScopePropertiesDto.ApiScopeName = await _apiScopeRepository.GetApiScopeName(apiScopeId);
 
         //TODO: to create audit log
 
@@ -92,7 +120,7 @@ public class ApiScopeService : IApiScopeService
 
         var apiScopeProperty = apiScopeProperties.ToEntity();
 
-        var saved = await ApiScopeRepository.AddApiScopeProperty(apiScopeProperties.ApiScopeId, apiScopeProperty);
+        var saved = await _apiScopeRepository.AddApiScopeProperty(apiScopeProperties.ApiScopeId, apiScopeProperty);
 
         //TODO: to create audit log
 
@@ -108,12 +136,12 @@ public class ApiScopeService : IApiScopeService
 
     public virtual async Task<ApiScopePropertiesDto> GetApiScopePropertyAsync(int apiScopePropertyId)
     {
-        var apiScopeProperty = await ApiScopeRepository.GetApiScopeProperty(apiScopePropertyId);
+        var apiScopeProperty = await _apiScopeRepository.GetApiScopeProperty(apiScopePropertyId);
         if (apiScopeProperty == null) throw new UserFriendlyErrorPageException(string.Format(ApiScopeServiceResources.ApiScopePropertyDoesNotExist().Description, apiScopePropertyId));
 
         var apiScopePropertiesDto = apiScopeProperty.ToModel();
         apiScopePropertiesDto.ApiScopeId = apiScopeProperty.ScopeId;
-        apiScopePropertiesDto.ApiScopeName = await ApiScopeRepository.GetApiScopeName(apiScopeProperty.ScopeId);
+        apiScopePropertiesDto.ApiScopeName = await _apiScopeRepository.GetApiScopeName(apiScopeProperty.ScopeId);
 
         //TODO: to create audit log
 
@@ -124,6 +152,17 @@ public class ApiScopeService : IApiScopeService
     {
         var resource = apiResourceProperty.ToEntity();
 
-        return await ApiScopeRepository.CanInsertApiScopeProperty(resource);
+        return await _apiScopeRepository.CanInsertApiScopeProperty(resource);
+    }
+
+    public async Task<int> DeleteApiScopePropertyAsync(ApiScopePropertiesDto apiScopeProperty)
+    {
+        var propertyEntity = apiScopeProperty.ToEntity();
+
+        var deleted = await _apiScopeRepository.DeleteApiScopePropertyAsync(propertyEntity);
+
+        //TODO: to create audit log
+
+        return deleted;
     }
 }

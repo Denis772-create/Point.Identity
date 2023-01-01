@@ -68,6 +68,38 @@ public class IdentityResourceRepository<TDbContext> : IIdentityResourceRepositor
         return identityResource.Id;
     }
 
+    private async Task RemoveIdentityResourceClaimsAsync(IdentityResource identityResource)
+    {
+        var identityClaims = await DbContext.IdentityClaims
+            .Where(x => x.IdentityResource.Id == identityResource.Id)
+            .ToListAsync();
+
+        DbContext.IdentityClaims.RemoveRange(identityClaims);
+    }
+
+    public async Task<int> UpdateIdentityResourceAsync(IdentityResource identityResource)
+    {
+        //Remove old relations
+        await RemoveIdentityResourceClaimsAsync(identityResource);
+
+        //Update with new data
+        DbContext.IdentityResources.Update(identityResource);
+
+        return await AutoSaveChangesAsync();
+    }
+
+    public async Task<int> DeleteIdentityResourceAsync(IdentityResource identityResource)
+    {
+        var identityResourceToDelete = await DbContext.IdentityResources
+            .Where(x => x.Id == identityResource.Id)
+            .SingleOrDefaultAsync();
+
+        if (identityResourceToDelete == null) return -1;
+
+        DbContext.IdentityResources.Remove(identityResourceToDelete);
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<bool> CanInsertIdentityResourceProperty(IdentityResourceProperty identityResourceProperty)
     {
         var existsWithSameName = await DbContext.IdentityResourceProperties
@@ -111,6 +143,18 @@ public class IdentityResourceRepository<TDbContext> : IIdentityResourceRepositor
         identityResourceProperty.IdentityResource = identityResource;
         await DbContext.IdentityResourceProperties.AddAsync(identityResourceProperty);
 
+        return await AutoSaveChangesAsync();
+    }
+
+    public async Task<int> DeleteIdentityResourcePropertyAsync(IdentityResourceProperty identityResourceProperty)
+    {
+        var propertyToDelete = await DbContext.IdentityResourceProperties
+            .Where(x => x.Id == identityResourceProperty.Id)
+            .SingleOrDefaultAsync();
+
+        if (propertyToDelete is null) return -1;
+
+        DbContext.IdentityResourceProperties.Remove(propertyToDelete);
         return await AutoSaveChangesAsync();
     }
 

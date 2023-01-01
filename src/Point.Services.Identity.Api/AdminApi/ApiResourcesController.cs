@@ -56,6 +56,28 @@ public class ApiResourcesController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = apiResourceId }, apiResourceApi);
     }
 
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] ApiResourceApiDto apiResourceApi)
+    {
+        var apiResourceDto = apiResourceApi.ToApiResourceApiModel<ApiResourceDto>();
+
+        await _apiResourceService.GetApiResourceAsync(apiResourceDto.Id);
+        await _apiResourceService.UpdateApiResourceAsync(apiResourceDto);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var apiResourceDto = new ApiResourceDto { Id = id };
+
+        await _apiResourceService.GetApiResourceAsync(apiResourceDto.Id);
+        await _apiResourceService.DeleteApiResourceAsync(apiResourceDto);
+
+        return Ok();
+    }
+
     [HttpGet("{id}/Secrets")]
     public async Task<ActionResult<ApiSecretsApiDto>> GetSecrets(int id, int page = 1, int pageSize = 10)
     {
@@ -77,7 +99,7 @@ public class ApiResourcesController : ControllerBase
     [HttpPost("{id}/Secrets")]
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> PostSecret(int id, [FromBody] ApiSecretApiDto clientSecretApi)
+    public async Task<IActionResult> AddSecret(int id, [FromBody] ApiSecretApiDto clientSecretApi)
     {
         var secretsDto = clientSecretApi.ToApiResourceApiModel<ApiSecretsDto>();
         secretsDto.ApiResourceId = id;
@@ -91,6 +113,17 @@ public class ApiResourcesController : ControllerBase
         clientSecretApi.Id = secretId;
 
         return CreatedAtAction(nameof(GetSecret), new { secretId }, clientSecretApi);
+    }
+
+    [HttpDelete("Secrets/{secretId}")]
+    public async Task<IActionResult> DeleteSecret(int secretId)
+    {
+        var apiSecret = new ApiSecretsDto { ApiSecretId = secretId };
+
+        await _apiResourceService.GetApiSecretAsync(apiSecret.ApiSecretId);
+        await _apiResourceService.DeleteApiSecretAsync(apiSecret);
+
+        return Ok();
     }
 
     [HttpGet("{id}/Properties")]
@@ -129,4 +162,16 @@ public class ApiResourcesController : ControllerBase
 
         return CreatedAtAction(nameof(GetProperty), new { propertyId }, apiPropertyApi);
     }
+
+    [HttpDelete("Properties/{propertyId}")]
+    public async Task<IActionResult> DeleteProperty(int propertyId)
+    {
+        var apiResourceProperty = new ApiResourcePropertiesDto { ApiResourcePropertyId = propertyId };
+
+        await _apiResourceService.GetApiResourcePropertyAsync(apiResourceProperty.ApiResourcePropertyId);
+        await _apiResourceService.DeleteApiResourcePropertyAsync(apiResourceProperty);
+
+        return Ok();
+    }
+
 }

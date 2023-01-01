@@ -2,19 +2,19 @@
 
 public class IdentityResourceService : IIdentityResourceService
 {
-    protected readonly IIdentityResourceRepository IdentityResourceRepository;
+    protected readonly IIdentityResourceRepository _identityResourceRepository;
     protected readonly IIdentityResourceServiceResources IdentityResourceServiceResources;
 
-    public IdentityResourceService(IIdentityResourceRepository identityResourceRepository,
+    public IdentityResourceService(IIdentityResourceRepository identityIdentityResourceRepository,
         IIdentityResourceServiceResources identityResourceServiceResources)
     {
-        IdentityResourceRepository = identityResourceRepository;
+        _identityResourceRepository = identityIdentityResourceRepository;
         IdentityResourceServiceResources = identityResourceServiceResources;
     }
 
     public virtual async Task<IdentityResourcesDto> GetIdentityResourcesAsync(string search, int page = 1, int pageSize = 10)
     {
-        var pagedList = await IdentityResourceRepository.GetIdentityResources(search, page, pageSize);
+        var pagedList = await _identityResourceRepository.GetIdentityResources(search, page, pageSize);
         var identityResourcesDto = pagedList.ToModel();
 
         // TODO: create audit log
@@ -24,7 +24,7 @@ public class IdentityResourceService : IIdentityResourceService
 
     public virtual async Task<IdentityResourceDto> GetIdentityResourceAsync(int identityResourceId)
     {
-        var identityResource = await IdentityResourceRepository.GetIdentityResource(identityResourceId);
+        var identityResource = await _identityResourceRepository.GetIdentityResource(identityResourceId);
         if (identityResource == null)
             throw new UserFriendlyErrorPageException(string.Format(IdentityResourceServiceResources.IdentityResourceDoesNotExist().Description, identityResourceId));
 
@@ -39,7 +39,7 @@ public class IdentityResourceService : IIdentityResourceService
     {
         var resource = identityResource.ToEntity();
 
-        return await IdentityResourceRepository.CanInsertIdentityResource(resource);
+        return await _identityResourceRepository.CanInsertIdentityResource(resource);
     }
 
     public virtual async Task<int> AddIdentityResourceAsync(IdentityResourceDto identityResource)
@@ -51,20 +51,50 @@ public class IdentityResourceService : IIdentityResourceService
 
         var resource = identityResource.ToEntity();
 
-        var saved = await IdentityResourceRepository.AddIdentityResource(resource);
+        var saved = await _identityResourceRepository.AddIdentityResource(resource);
 
         // TODO: create audit log
 
         return saved;
     }
 
+    public async Task<int> UpdateIdentityResourceAsync(IdentityResourceDto identityResource)
+    {
+        var canInsert = await CanInsertIdentityResourceAsync(identityResource);
+        if (!canInsert)
+        {
+            throw new UserFriendlyViewException(string.Format(IdentityResourceServiceResources.IdentityResourceExistsValue().Description, identityResource.Name), IdentityResourceServiceResources.IdentityResourceExistsKey().Description, identityResource);
+        }
+
+        var resource = identityResource.ToEntity();
+
+        var originalIdentityResource = await GetIdentityResourceAsync(resource.Id);
+
+        var updated = await _identityResourceRepository.UpdateIdentityResourceAsync(resource);
+
+        // TODO: create audit log
+
+        return updated;
+    }
+
+    public async Task<int> DeleteIdentityResourceAsync(IdentityResourceDto identityResource)
+    {
+        var resource = identityResource.ToEntity();
+
+        var deleted = await _identityResourceRepository.DeleteIdentityResourceAsync(resource);
+
+        // TODO: create audit log
+
+        return deleted;
+    }
+
     public virtual async Task<IdentityResourcePropertiesDto> GetIdentityResourcePropertiesAsync(int identityResourceId, int page = 1, int pageSize = 10)
     {
-        var identityResource = await IdentityResourceRepository.GetIdentityResource(identityResourceId);
+        var identityResource = await _identityResourceRepository.GetIdentityResource(identityResourceId);
         if (identityResource == null)
             throw new UserFriendlyErrorPageException(string.Format(IdentityResourceServiceResources.IdentityResourceDoesNotExist().Description, identityResourceId), IdentityResourceServiceResources.IdentityResourceDoesNotExist().Description);
 
-        var pagedList = await IdentityResourceRepository.GetIdentityResourceProperties(identityResourceId, page, pageSize);
+        var pagedList = await _identityResourceRepository.GetIdentityResourceProperties(identityResourceId, page, pageSize);
         var identityResourcePropertiesAsync = pagedList.ToModel();
         identityResourcePropertiesAsync.IdentityResourceId = identityResourceId;
         identityResourcePropertiesAsync.IdentityResourceName = identityResource.Name;
@@ -76,10 +106,10 @@ public class IdentityResourceService : IIdentityResourceService
 
     public virtual async Task<IdentityResourcePropertiesDto> GetIdentityResourcePropertyAsync(int identityResourcePropertyId)
     {
-        var identityResourceProperty = await IdentityResourceRepository.GetIdentityResourceProperty(identityResourcePropertyId);
+        var identityResourceProperty = await _identityResourceRepository.GetIdentityResourceProperty(identityResourcePropertyId);
         if (identityResourceProperty == null) throw new UserFriendlyErrorPageException(string.Format(IdentityResourceServiceResources.IdentityResourcePropertyDoesNotExist().Description, identityResourcePropertyId));
 
-        var identityResource = await IdentityResourceRepository.GetIdentityResource(identityResourceProperty.IdentityResourceId);
+        var identityResource = await _identityResourceRepository.GetIdentityResource(identityResourceProperty.IdentityResourceId);
 
         var identityResourcePropertiesDto = identityResourceProperty.ToModel();
         identityResourcePropertiesDto.IdentityResourceId = identityResourceProperty.IdentityResourceId;
@@ -101,7 +131,7 @@ public class IdentityResourceService : IIdentityResourceService
 
         var identityResourceProperty = identityResourceProperties.ToEntity();
 
-        var added = await IdentityResourceRepository.AddIdentityResourceProperty(identityResourceProperties.IdentityResourceId, identityResourceProperty);
+        var added = await _identityResourceRepository.AddIdentityResourceProperty(identityResourceProperties.IdentityResourceId, identityResourceProperty);
 
         // TODO: create audit log
 
@@ -120,6 +150,17 @@ public class IdentityResourceService : IIdentityResourceService
     {
         var resource = identityResourcePropertiesDto.ToEntity();
 
-        return await IdentityResourceRepository.CanInsertIdentityResourceProperty(resource);
+        return await _identityResourceRepository.CanInsertIdentityResourceProperty(resource);
+    }
+
+    public async Task<int> DeleteIdentityResourcePropertyAsync(IdentityResourcePropertiesDto identityResourceProperty)
+    {
+        var propertyEntity = identityResourceProperty.ToEntity();
+
+        var deleted = await _identityResourceRepository.DeleteIdentityResourcePropertyAsync(propertyEntity);
+
+        // TODO: create audit log
+
+        return deleted;
     }
 }

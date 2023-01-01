@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Point.Services.Identity.Web.AdminApi;
 
 namespace Point.Services.Identity.Web.Extensions;
 
@@ -9,7 +10,6 @@ public static class ServiceExtensions
         var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
         app.UseRequestLocalization(options!.Value);
     }
-
 
     public static IServiceCollection ConfigureVersions(this IServiceCollection services)
         => services.AddApiVersioning(opt =>
@@ -145,11 +145,19 @@ public static class ServiceExtensions
                         TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto>());
             });
 
-
         services.AddScoped<IApiErrorResources, ApiErrorResources>();
         services.AddScoped<ControllerExceptionFilterAttribute>();
-        services.AddScoped<AccountController<UserIdentity, Guid>>();
 
+        // add generic controllers
+        services.AddScoped<AccountController<UserIdentity, Guid>>();
+        services.AddScoped<UsersController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim,
+            UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto,
+            UserRolesDto, UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimsDto, UserClaimDto, RoleClaimDto>>();
+        services.AddScoped<RolesController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, 
+            UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto, 
+            UserRolesDto, UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimsDto, UserClaimDto, RoleClaimDto>>();
+
+        // configure Localization
         var cultureConfiguration = configuration.GetSection(nameof(CultureConfiguration))
             .Get<CultureConfiguration>();
 
@@ -252,7 +260,7 @@ public static class ServiceExtensions
     public static AuthenticationBuilder AddApiAuthentication(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var adminApiConfiguration = configuration.GetSection(nameof(AdminApiConfiguration)) 
+        var adminApiConfiguration = configuration.GetSection(nameof(AdminApiConfiguration))
             .Get<AdminApiConfiguration>();
 
         return services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

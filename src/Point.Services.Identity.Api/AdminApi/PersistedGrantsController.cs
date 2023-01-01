@@ -47,6 +47,23 @@ public class PersistedGrantsController : ControllerBase
         return Ok(persistedGrantApiDto);
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        await _persistedGrantsService.DeletePersistedGrantAsync(UrlHelpers.QueryStringUnSafeHash(id));
+
+        return Ok();
+    }
+
+    [HttpDelete("Subjects/{subjectId}")]
+    public async Task<IActionResult> DeleteBySubject(string subjectId)
+    {
+        await _persistedGrantsService.DeletePersistedGrantsAsync(subjectId);
+
+        return Ok();
+    }
+
+
     private static void ParsePersistedGrantKey(PersistedGrantApiDto persistedGrantApiDto)
     {
         if (!string.IsNullOrEmpty(persistedGrantApiDto.Key))

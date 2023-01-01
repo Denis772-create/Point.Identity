@@ -72,6 +72,13 @@ public class ClientRepository<TDbContext> : IClientRepository
         return pagedList;
     }
 
+    public async Task<int> RemoveClientAsync(Client client)
+    {
+        DbContext.Clients.Remove(client);
+
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<int> AddClientSecret(int clientId, ClientSecret clientSecret)
     {
         var client = await DbContext.Clients
@@ -111,6 +118,15 @@ public class ClientRepository<TDbContext> : IClientRepository
             .SingleOrDefaultAsync();
     }
 
+    public async Task<int> DeleteClientSecretAsync(ClientSecret clientSecret)
+    {
+        var secretToDelete = await DbContext.ClientSecrets.Where(x => x.Id == clientSecret.Id).SingleOrDefaultAsync();
+        if (secretToDelete is null) return -1;
+
+        DbContext.ClientSecrets.Remove(secretToDelete);
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<PagedList<ClientProperty>> GetClientProperties(int clientId, int page = 1, int pageSize = 10)
     {
         var pagedList = new PagedList<ClientProperty>();
@@ -142,6 +158,17 @@ public class ClientRepository<TDbContext> : IClientRepository
         clientProperty.Client = client;
         await DbContext.ClientProperties.AddAsync(clientProperty);
 
+        return await AutoSaveChangesAsync();
+    }
+
+    public async Task<int> DeleteClientPropertyAsync(ClientProperty clientProperty)
+    {
+        var propertyToDelete = await DbContext.ClientProperties
+            .Where(x => x.Id == clientProperty.Id)
+            .SingleOrDefaultAsync();
+        if (propertyToDelete is null) return -1;
+
+        DbContext.ClientProperties.Remove(propertyToDelete);
         return await AutoSaveChangesAsync();
     }
 
@@ -184,6 +211,16 @@ public class ClientRepository<TDbContext> : IClientRepository
         return await AutoSaveChangesAsync();
     }
 
+    public async Task<int> DeleteClientClaimAsync(ClientClaim clientClaim)
+    {
+        var claimToDelete = await DbContext.ClientClaims.Where(x => x.Id == clientClaim.Id).SingleOrDefaultAsync();
+
+        if (claimToDelete is null) return -1;
+
+        DbContext.ClientClaims.Remove(claimToDelete);
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<(string? ClientId, string? ClientName)> GetClientId(int clientId)
     {
         var client = await DbContext.Clients
@@ -192,6 +229,66 @@ public class ClientRepository<TDbContext> : IClientRepository
             .SingleOrDefaultAsync();
 
         return (client?.ClientId, client?.ClientName);
+    }
+
+    public Task<int> CloneClientAsync(Client client, bool cloneClientCorsOrigins = true, bool cloneClientGrantTypes = true,
+        bool cloneClientIdPRestrictions = true, bool cloneClientPostLogoutRedirectUris = true,
+        bool cloneClientScopes = true, bool cloneClientRedirectUris = true, bool cloneClientClaims = true,
+        bool cloneClientProperties = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> UpdateClientAsync(Client client, bool updateClientClaims = false, bool updateClientProperties = false)
+    {
+        //Remove old relations
+        await RemoveClientRelationsAsync(client, updateClientClaims, updateClientProperties);
+
+        //Update with new data
+        DbContext.Clients.Update(client);
+
+        return await AutoSaveChangesAsync();
+    }
+
+    private async Task RemoveClientRelationsAsync(Client client, bool updateClientClaims, bool updateClientProperties)
+    {
+        //Remove old allowed scopes
+        var clientScopes = await DbContext.ClientScopes.Where(x => x.Client.Id == client.Id).ToListAsync();
+        DbContext.ClientScopes.RemoveRange(clientScopes);
+
+        //Remove old grant types
+        var clientGrantTypes = await DbContext.ClientGrantTypes.Where(x => x.Client.Id == client.Id).ToListAsync();
+        DbContext.ClientGrantTypes.RemoveRange(clientGrantTypes);
+
+        //Remove old redirect uri
+        var clientRedirectUris = await DbContext.ClientRedirectUris.Where(x => x.Client.Id == client.Id).ToListAsync();
+        DbContext.ClientRedirectUris.RemoveRange(clientRedirectUris);
+
+        //Remove old client cors
+        var clientCorsOrigins = await DbContext.ClientCorsOrigins.Where(x => x.Client.Id == client.Id).ToListAsync();
+        DbContext.ClientCorsOrigins.RemoveRange(clientCorsOrigins);
+
+        //Remove old client id restrictions
+        var clientIdPRestrictions = await DbContext.ClientIdPRestrictions.Where(x => x.Client.Id == client.Id).ToListAsync();
+        DbContext.ClientIdPRestrictions.RemoveRange(clientIdPRestrictions);
+
+        //Remove old client post logout redirect
+        var clientPostLogoutRedirectUris = await DbContext.ClientPostLogoutRedirectUris.Where(x => x.Client.Id == client.Id).ToListAsync();
+        DbContext.ClientPostLogoutRedirectUris.RemoveRange(clientPostLogoutRedirectUris);
+
+        //Remove old client claims
+        if (updateClientClaims)
+        {
+            var clientClaims = await DbContext.ClientClaims.Where(x => x.Client.Id == client.Id).ToListAsync();
+            DbContext.ClientClaims.RemoveRange(clientClaims);
+        }
+
+        //Remove old client properties
+        if (updateClientProperties)
+        {
+            var clientProperties = await DbContext.ClientProperties.Where(x => x.Client.Id == client.Id).ToListAsync();
+            DbContext.ClientProperties.RemoveRange(clientProperties);
+        }
     }
 
     protected virtual async Task<int> AutoSaveChangesAsync()

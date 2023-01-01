@@ -52,6 +52,42 @@ public class ClientsController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id }, client);
     }
 
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] ClientApiDto client)
+    {
+        var clientDto = client.ToClientApiModel<ClientDto>();
+
+        await _clientService.GetClientAsync(clientDto.Id);
+        await _clientService.UpdateClientAsync(clientDto, updateClientClaims: true, updateClientProperties: true);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var clientDto = new ClientDto { Id = id };
+
+        await _clientService.GetClientAsync(clientDto.Id);
+        await _clientService.RemoveClientAsync(clientDto);
+
+        return Ok();
+    }
+
+    [HttpPost("Clone")]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> PostClientClone([FromBody] ClientCloneApiDto client)
+    {
+        var clientCloneDto = client.ToClientApiModel<ClientCloneDto>();
+
+        var originalClient = await _clientService.GetClientAsync(clientCloneDto.Id);
+        var id = await _clientService.CloneClientAsync(clientCloneDto);
+        originalClient.Id = id;
+
+        return CreatedAtAction(nameof(Get), new { id }, originalClient);
+    }
+
     [HttpGet("{id}/Secrets")]
     public async Task<ActionResult<ClientSecretsApiDto>> GetSecrets(int id, int page = 1, int pageSize = 10)
     {
@@ -60,6 +96,7 @@ public class ClientsController : ControllerBase
 
         return Ok(clientSecretsApiDto);
     }
+
 
     [HttpGet("Secrets/{secretId}")]
     public async Task<ActionResult<ClientSecretApiDto>> GetSecret(int secretId)
@@ -87,6 +124,17 @@ public class ClientsController : ControllerBase
         clientSecretApi.Id = secretId;
 
         return CreatedAtAction(nameof(GetSecret), new { secretId }, clientSecretApi);
+    }
+
+    [HttpDelete("Secrets/{secretId}")]
+    public async Task<IActionResult> DeleteSecret(int secretId)
+    {
+        var clientSecret = new ClientSecretsDto { ClientSecretId = secretId };
+
+        await _clientService.GetClientSecretAsync(clientSecret.ClientSecretId);
+        await _clientService.DeleteClientSecretAsync(clientSecret);
+
+        return Ok();
     }
 
     [HttpGet("{id}/Properties")]
@@ -126,6 +174,17 @@ public class ClientsController : ControllerBase
         return CreatedAtAction(nameof(GetProperty), new { propertyId }, clientPropertyApi);
     }
 
+    [HttpDelete("Properties/{propertyId}")]
+    public async Task<IActionResult> DeleteProperty(int propertyId)
+    {
+        var clientProperty = new ClientPropertiesDto { ClientPropertyId = propertyId };
+
+        await _clientService.GetClientPropertyAsync(clientProperty.ClientPropertyId);
+        await _clientService.DeleteClientPropertyAsync(clientProperty);
+
+        return Ok();
+    }
+
     [HttpGet("{id}/Claims")]
     public async Task<ActionResult<ClientClaimsApiDto>> GetClaims(int id, int page = 1, int pageSize = 10)
     {
@@ -163,4 +222,14 @@ public class ClientsController : ControllerBase
         return CreatedAtAction(nameof(GetClaim), new { claimId }, clientClaimApiDto);
     }
 
+    [HttpDelete("Claims/{claimId}")]
+    public async Task<IActionResult> DeleteClaim(int claimId)
+    {
+        var clientClaimsDto = new ClientClaimsDto { ClientClaimId = claimId };
+
+        await _clientService.GetClientClaimAsync(claimId);
+        await _clientService.DeleteClientClaimAsync(clientClaimsDto);
+
+        return Ok();
+    }
 }

@@ -113,6 +113,37 @@ public class PersistedGrantAspNetIdentityRepository<TIdentityDbContext, TPersist
         return PersistedGrantDbContext.PersistedGrants.AnyAsync(x => x.Key == key);
     }
 
+    public async Task<int> DeletePersistedGrantAsync(string key)
+    {
+        var persistedGrant = await PersistedGrantDbContext.PersistedGrants.Where(x => x.Key == key).SingleOrDefaultAsync();
+
+        if (persistedGrant == null) return -1;
+
+        PersistedGrantDbContext.PersistedGrants.Remove(persistedGrant);
+
+        return await AutoSaveChangesAsync();
+    }
+
+    protected virtual async Task<int> AutoSaveChangesAsync()
+    {
+        return AutoSaveChanges
+            ? await PersistedGrantDbContext.SaveChangesAsync()
+            : (int)SavedStatus.WillBeSavedExplicitly;
+    }
+
+
+    public async Task<int> DeletePersistedGrantsAsync(string userId)
+    {
+        var grants = await PersistedGrantDbContext.PersistedGrants
+            .Where(x => x.SubjectId == userId)
+            .ToListAsync();
+
+        if (!grants.Any()) return -1;
+
+        PersistedGrantDbContext.RemoveRange(grants);
+        return await AutoSaveChangesAsync();
+    }
+
     public virtual async Task<int> SaveAllChangesAsync()
     {
         return await PersistedGrantDbContext.SaveChangesAsync();
