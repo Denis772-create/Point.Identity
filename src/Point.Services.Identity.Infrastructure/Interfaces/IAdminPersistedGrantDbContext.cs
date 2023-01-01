@@ -1,6 +1,8 @@
-﻿namespace Point.Services.Identity.Infrastructure.Interfaces;
+﻿using Point.Services.Identity.Domain;
+
+namespace Point.Services.Identity.Infrastructure.Interfaces;
 
 public interface IAdminPersistedGrantDbContext : IPersistedGrantDbContext
 {
-
+    DbSet<Key> Keys { get; set; }
 }
