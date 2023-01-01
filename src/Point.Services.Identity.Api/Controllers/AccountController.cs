@@ -1,12 +1,10 @@
-﻿using Point.Services.Identity.Web.Configuration;
-using Point.Services.Identity.Web.ViewModels.Account;
-
-namespace Point.Services.Identity.Web.Controllers;
+﻿namespace Point.Services.Identity.Web.Controllers;
 
 [Authorize]
 [SecurityHeaders]
-public class AccountController<TUser> : Controller
-    where TUser : IdentityUser<Guid>, new()
+public class AccountController<TUser, TKey> : Controller
+    where TUser : IdentityUser<TKey>, new()
+    where TKey : IEquatable<TKey>
 {
 
     private readonly IClientStore _clientStore;
@@ -15,24 +13,24 @@ public class AccountController<TUser> : Controller
     private readonly IdentityOptions _identityOptions;
     private readonly UserResolver<TUser> _userResolver;
     private readonly LoginConfiguration _loginConfiguration;
-    private readonly ILogger<AccountController<TUser>> _logger;
+    private readonly ILogger<AccountController<TUser, TKey>> _logger;
     private readonly RegisterConfiguration _registerConfiguration;
     private readonly IAuthenticationSchemeProvider _schemeProvider;
     private readonly ApplicationSignInManager<TUser> _signInManager;
     private readonly IIdentityServerInteractionService _interaction;
-    private readonly IGenericLocalizer<AccountController<TUser>> _localizer;
+    private readonly IGenericControllerLocalizer<AccountController<TUser, TKey>> _localizer;
 
 
     public AccountController(IIdentityServerInteractionService interaction,
         IAuthenticationSchemeProvider schemeProvider,
         IClientStore clientStore,
         ApplicationSignInManager<TUser> signInManager,
-        IGenericLocalizer<AccountController<TUser>> localizer,
+        IGenericControllerLocalizer<AccountController<TUser, TKey>> localizer,
         UserManager<TUser> userManager,
         UserResolver<TUser> userResolver,
         LoginConfiguration loginConfiguration,
         RegisterConfiguration registerConfiguration,
-        IEmailSender emailSender, IdentityOptions identityOptions, ILogger<AccountController<TUser>> logger)
+        IEmailSender emailSender, IdentityOptions identityOptions, ILogger<AccountController<TUser, TKey>> logger)
     {
         _interaction = interaction;
         _schemeProvider = schemeProvider;
@@ -85,39 +83,37 @@ public class AccountController<TUser> : Controller
 
         if (ModelState.IsValid)
         {
-            var user = await _userResolver.GetUserAsync(model.Username!);
-            if (user != default(TUser))
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password,
+                model.RememberLogin, lockoutOnFailure: true);
+
+            if (result.Succeeded)
             {
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password,
-                    model.RememberLogin, lockoutOnFailure: true);
-                if (result.Succeeded)
+                // TODO: raise event here User Login Success
+
+                if (context != null)
                 {
-                    // TODO: raise event here User Login Success
-
-                    if (context != null)
-                    {
-                        return context.IsNativeClient()
-                            ? this.LoadingPage("Redirect", model.ReturnUrl)
-                            : Redirect(model.ReturnUrl);
-                    }
-
-                    if (Url.IsLocalUrl(model.ReturnUrl)) return Redirect(model.ReturnUrl);
-
-                    if (string.IsNullOrEmpty(model.ReturnUrl)) return Redirect("~/");
-
-                    throw new Exception("invalid return URL");
+                    return context.IsNativeClient()
+                        ? this.LoadingPage("Redirect", model.ReturnUrl)
+                        : Redirect(model.ReturnUrl);
                 }
 
-                if (result.RequiresTwoFactor)
-                {
-                    // TODO: implement redirection to Login With 2fa
-                }
+                if (Url.IsLocalUrl(model.ReturnUrl)) return Redirect(model.ReturnUrl);
 
-                if (result.IsLockedOut)
-                {
-                    return View("Lockout");
-                }
+                if (string.IsNullOrEmpty(model.ReturnUrl)) return Redirect("~/");
+
+                throw new Exception("invalid return URL");
             }
+
+            if (result.RequiresTwoFactor)
+            {
+                // TODO: implement redirection to Login With 2fa
+            }
+
+            if (result.IsLockedOut)
+            {
+                return View("Lockout");
+            }
+
             // TODO: raise event here User Login Failure
             ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
 
@@ -308,12 +304,13 @@ public class AccountController<TUser> : Controller
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var callbackUrl = Url.Action("ResetPassword", "Account", new
             {
-                userId = user.Id, code
+                userId = user.Id,
+                code
             }, HttpContext.Request.Scheme);
 
-            await _emailSender.SendEmailAsync(user.Email, 
-                _localizer["ResetPasswordTitle"], 
-                _localizer["ResetPasswordBody", 
+            await _emailSender.SendEmailAsync(user.Email,
+                _localizer["ResetPasswordTitle"],
+                _localizer["ResetPasswordBody",
                     HtmlEncoder.Default.Encode(callbackUrl)]);
 
             return View("ForgotPasswordConfirmation");

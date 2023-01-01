@@ -1,5 +1,4 @@
-﻿@using Point.Services.Identity.Web.Helpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IRootConfiguration RootConfiguration
 
 @if (!string.IsNullOrEmpty(Context.Request.Cookies[ThemeHelpers.CookieThemeKey]) && Context.Request.Cookies[ThemeHelpers.CookieThemeKey] != ThemeHelpers.DefaultTheme)
