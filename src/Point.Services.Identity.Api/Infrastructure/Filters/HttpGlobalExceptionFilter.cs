@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.Infrastructure.ActionResults;
-
-namespace Point.Services.Identity.Web.Infrastructure.Filters;
+﻿namespace Point.Services.Identity.Web.Infrastructure.Filters;
 
 public class HttpGlobalExceptionFilter : IExceptionFilter
 {

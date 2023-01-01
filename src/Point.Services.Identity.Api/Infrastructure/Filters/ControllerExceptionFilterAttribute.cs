@@ -49,18 +49,18 @@ public class ControllerExceptionFilterAttribute : ExceptionFilterAttribute
             {
                 foreach (var message in userFriendlyViewException.ErrorMessages)
                 {
-                    context.ModelState.AddModelError(message.ErrorKey ?? ErrorKey, message.ErrorMessage);
+                    context.ModelState.AddModelError(message.ErrorKey, message.ErrorMessage);
                 }
             }
             else
             {
-                context.ModelState.AddModelError(userFriendlyViewException.ErrorKey ?? ErrorKey, context.Exception.Message);
+                context.ModelState.AddModelError(userFriendlyViewException.ErrorKey, context.Exception.Message);
             }
         }
 
         if (context.Exception is UserFriendlyErrorPageException userFriendlyErrorPageException)
         {
-            context.ModelState.AddModelError(userFriendlyErrorPageException.ErrorKey ?? ErrorKey, context.Exception.Message);
+            context.ModelState.AddModelError(userFriendlyErrorPageException.ErrorKey, context.Exception.Message);
         }
     }
 
