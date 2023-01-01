@@ -1,3 +1,5 @@
+﻿using Point.Services.Identity.Infrastructure.Configuration;
+
 namespace Point.Services.Identity.Web;
 
 public class Program
@@ -15,6 +17,8 @@ public class Program
             Log.Information("Configuring web host ({ApplicationName})...");
             var host = BuildHost(args);
 
+            await ApplyDbMigrationsWithDataSeedAsync(configuration, host);
+
             Log.Information("Starting web host ({ApplicationName})...");
             await host.RunAsync();
         }
@@ -27,6 +31,7 @@ public class Program
             await Log.CloseAndFlushAsync();
         }
     }
+
 
     public static IHost BuildHost(string[] args) =>
         Host.CreateDefaultBuilder(args)
@@ -49,8 +54,21 @@ public class Program
         return new ConfigurationBuilder()
             .AddEnvironmentVariables()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile($"appsettings.{env}.json",
-                optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true)
             .Build();
+    }
+
+    private static async Task ApplyDbMigrationsWithDataSeedAsync(IConfiguration configuration,
+        IHost host)
+    {
+        var seedConfiguration = configuration.GetSection(nameof(SeedConfiguration)).Get<SeedConfiguration>();
+        var databaseMigrationsConfiguration = configuration.GetSection(nameof(DatabaseMigrationsConfiguration))
+            .Get<DatabaseMigrationsConfiguration>();
+
+        await DbMigrationHelpers
+            .ApplyDbMigrationsWithDataSeedAsync<IdentityServerConfigurationDbContext, AspIdentityDbContext,
+                IdentityServerPersistedGrantDbContext, ProtectionDbContext, UserIdentity, UserIdentityRole, Guid>(host,
+                seedConfiguration, databaseMigrationsConfiguration);
     }
 }
