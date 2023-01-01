@@ -1,4 +1,5 @@
 ﻿global using System.Linq.Expressions;
+global using System.Net.Mail;
 global using System.Reflection;
 global using IdentityServer4.EntityFramework.DbContexts;
 global using IdentityServer4.EntityFramework.Entities;
@@ -6,9 +7,12 @@ global using IdentityServer4.EntityFramework.Interfaces;
 global using IdentityServer4.EntityFramework.Options;
 global using IdentityServer4.EntityFramework.Storage;
 global using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Identity.UI.Services;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
 global using Point.Services.Identity.Domain.Entities;
 global using Point.Services.Identity.Domain.Interfaces;
 global using Point.Services.Identity.Infrastructure.Configuration.Constants;
