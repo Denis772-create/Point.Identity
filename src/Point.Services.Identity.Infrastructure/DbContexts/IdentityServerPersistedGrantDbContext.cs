@@ -9,5 +9,5 @@ public class IdentityServerPersistedGrantDbContext : PersistedGrantDbContext<Ide
     {
     }
 
-    public DbSet<Key> Keys { get; set; }
+    public DbSet<Key> Keys { get; set; } =  null!;
 }
