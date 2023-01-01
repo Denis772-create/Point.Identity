@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Web.Dtos.ApiScopes;
+﻿namespace Point.Services.Identity.Web.DTOs.ApiScopes;
 
 public class ApiScopePropertyApiDto
 {

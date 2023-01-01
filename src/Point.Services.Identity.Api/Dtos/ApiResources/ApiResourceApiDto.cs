@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Web.Dtos.ApiResources;
+﻿namespace Point.Services.Identity.Web.DTOs.ApiResources;
 
 public class ApiResourceApiDto
 {

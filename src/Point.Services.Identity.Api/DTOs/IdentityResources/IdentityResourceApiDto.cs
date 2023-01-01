@@ -1,13 +1,11 @@
-﻿namespace Point.Services.Identity.Web.DTOs.ApiScopes;
+﻿namespace Point.Services.Identity.Web.DTOs.IdentityResources;
 
-public class ApiScopeApiDto
+public class IdentityResourceApiDto
 {
-    public ApiScopeApiDto()
+    public IdentityResourceApiDto()
     {
         UserClaims = new List<string>();
     }
-
-    public bool ShowInDiscoveryDocument { get; set; } = true;
 
     public int Id { get; set; }
 
@@ -18,13 +16,13 @@ public class ApiScopeApiDto
 
     public string Description { get; set; }
 
+    public bool Enabled { get; set; } = true;
+
+    public bool ShowInDiscoveryDocument { get; set; } = true;
+
     public bool Required { get; set; }
 
     public bool Emphasize { get; set; }
 
-    public bool Enabled { get; set; } = true;
-
     public List<string> UserClaims { get; set; }
-
-    public List<ApiScopePropertyApiDto> ApiScopeProperties { get; set; }
 }

@@ -1,6 +1,6 @@
-﻿namespace Point.Services.Identity.Web.DTOs.ApiResources;
+﻿namespace Point.Services.Identity.Web.DTOs.IdentityResources;
 
-public class ApiResourcePropertyApiDto
+public class IdentityResourcePropertyApiDto
 {
     public int Id { get; set; }
     public string Key { get; set; }
