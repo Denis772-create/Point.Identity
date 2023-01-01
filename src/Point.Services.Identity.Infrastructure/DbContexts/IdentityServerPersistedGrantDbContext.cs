@@ -1,4 +1,6 @@
-﻿namespace Point.Services.Identity.Infrastructure.DbContexts;
+﻿using Point.Services.Identity.Domain;
+
+namespace Point.Services.Identity.Infrastructure.DbContexts;
 
 public class IdentityServerPersistedGrantDbContext : PersistedGrantDbContext<IdentityServerPersistedGrantDbContext>, IAdminPersistedGrantDbContext
 {
@@ -6,4 +8,6 @@ public class IdentityServerPersistedGrantDbContext : PersistedGrantDbContext<Ide
         : base(options, new OperationalStoreOptions())
     {
     }
+
+    public DbSet<Key> Keys { get; set; }
 }
