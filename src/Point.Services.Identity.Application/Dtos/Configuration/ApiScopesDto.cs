@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Application.Dtos.Configuration;
+﻿namespace Point.Services.Identity.Application.DTOs.Configuration;
 
 public class ApiScopesDto
 {

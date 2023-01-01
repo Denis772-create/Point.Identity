@@ -1,4 +1,4 @@
-﻿namespace Point.Services.Identity.Application.Dtos.Common;
+﻿namespace Point.Services.Identity.Application.DTOs.Common;
 
 public class SelectItemDto
 {

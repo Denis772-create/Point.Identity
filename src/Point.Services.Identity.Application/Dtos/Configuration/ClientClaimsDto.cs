@@ -1,28 +1,27 @@
-﻿namespace Point.Services.Identity.Application.Dtos.Configuration
+﻿namespace Point.Services.Identity.Application.DTOs.Configuration;
+
+public class ClientClaimsDto
 {
-	public class ClientClaimsDto
-	{
-		public ClientClaimsDto()
-		{
-			ClientClaims = new List<ClientClaimDto>();
-		}
+    public ClientClaimsDto()
+    {
+        ClientClaims = new List<ClientClaimDto>();
+    }
 
-		public int ClientClaimId { get; set; }
+    public int ClientClaimId { get; set; }
 
-		public int ClientId { get; set; }
+    public int ClientId { get; set; }
 
-	    public string ClientName { get; set; }
+    public string ClientName { get; set; }
 
-        [Required]
-		public string Type { get; set; }
+    [Required]
+    public string Type { get; set; }
 
-	    [Required]
-        public string Value { get; set; }
+    [Required]
+    public string Value { get; set; }
 
-		public List<ClientClaimDto> ClientClaims { get; set; }
+    public List<ClientClaimDto> ClientClaims { get; set; }
 
-		public int TotalCount { get; set; }
+    public int TotalCount { get; set; }
 
-		public int PageSize { get; set; }	    
-	}
+    public int PageSize { get; set; }	    
 }

@@ -1,19 +1,18 @@
-﻿namespace Point.Services.Identity.Application.Dtos.Configuration
+﻿namespace Point.Services.Identity.Application.DTOs.Configuration;
+
+public class ClientSecretDto
 {
-    public class ClientSecretDto
-    {
-        [Required]
-        public string Type { get; set; } = "SharedSecret";
+    [Required]
+    public string Type { get; set; } = "SharedSecret";
 
-		public int Id { get; set; }
+    public int Id { get; set; }
 
-		public string Description { get; set; }
+    public string Description { get; set; }
 
-        [Required]
-		public string Value { get; set; }
+    [Required]
+    public string Value { get; set; }
 
-		public DateTime? Expiration { get; set; }
+    public DateTime? Expiration { get; set; }
 
-        public DateTime Created { get; set; }
-	}
+    public DateTime Created { get; set; }
 }
