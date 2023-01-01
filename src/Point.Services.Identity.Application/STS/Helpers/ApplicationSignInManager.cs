@@ -23,7 +23,7 @@ public class ApplicationSignInManager<TUser> : SignInManager<TUser>
     {
         var claims = additionalClaims.ToList();
 
-        var externalResult = await _contextAccessor.HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+        var externalResult = await _contextAccessor.HttpContext!.AuthenticateAsync(IdentityConstants.ExternalScheme);
         if (externalResult is { Succeeded: true })
         {
             var sid = externalResult.Principal.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
@@ -49,8 +49,8 @@ public class ApplicationSignInManager<TUser> : SignInManager<TUser>
             {
                 claims.Add(new Claim(JwtClaimTypes.IdentityProvider, authenticationMethod.Value));
             }
-
-            await base.SignInWithClaimsAsync(user, authenticationProperties, claims);
         }
+
+        await base.SignInWithClaimsAsync(user, authenticationProperties, claims);
     }
 }
