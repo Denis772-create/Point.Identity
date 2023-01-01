@@ -18,17 +18,17 @@ public static class DatabaseExtensions
             options.UseSqlServer(identityConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
         // Config DB from existing connection
-        services.AddConfigurationDbContext<TConfigurationDbContext>(options => 
-            options.ConfigureDbContext = b => 
+        services.AddConfigurationDbContext<TConfigurationDbContext>(options =>
+            options.ConfigureDbContext = b =>
                 b.UseSqlServer(configurationConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
         // Operational DB from existing connection
-        services.AddOperationalDbContext<TPersistedGrantDbContext>(options => 
-            options.ConfigureDbContext = b => 
+        services.AddOperationalDbContext<TPersistedGrantDbContext>(options =>
+            options.ConfigureDbContext = b =>
                 b.UseSqlServer(persistedGrantConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
         // DataProtectionKey DB from existing connection
-        services.AddDbContext<TDataProtectionDbContext>(options => 
+        services.AddDbContext<TDataProtectionDbContext>(options =>
             options.UseSqlServer(dataProtectionConnectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
     }
 }
