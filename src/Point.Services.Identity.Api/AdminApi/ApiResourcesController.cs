@@ -1,4 +1,5 @@
-﻿using ApiResourcePropertiesDto = Point.Services.Identity.Application.Dtos.Configuration.ApiResourcePropertiesDto;
+﻿using Point.Services.Identity.Web.DTOs.ApiResources;
+using ApiResourcePropertiesDto = Point.Services.Identity.Application.DTOs.Configuration.ApiResourcePropertiesDto;
 
 namespace Point.Services.Identity.Web.AdminApi;
 
