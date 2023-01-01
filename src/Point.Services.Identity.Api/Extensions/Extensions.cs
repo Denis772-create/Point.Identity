@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.ViewModels.Account;
-
-namespace Point.Services.Identity.Web.Extentions;
+﻿namespace Point.Services.Identity.Web.Extensions;
 
 public static class Extensions
 {
