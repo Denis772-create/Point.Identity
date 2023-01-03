@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Infrastructure.Repositories;
-
-namespace Point.Services.Identity.Application.Services;
+﻿namespace Point.Services.Identity.Application.Services;
 
 public class ApiResourceService : IApiResourceService
 {

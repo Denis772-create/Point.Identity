@@ -1,7 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-using Point.Services.Identity.Application.Configuration;
-using Point.Services.Identity.Application.Services;
-
 namespace Point.Services.Identity.Application.Helpers;
 
 public class AzureKeyVaultHelpers

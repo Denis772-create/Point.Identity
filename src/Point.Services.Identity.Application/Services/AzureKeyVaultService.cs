@@ -1,9 +1,7 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Microsoft.Azure.KeyVault;
+﻿using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Point.Services.Identity.Application.Configuration;
 
 namespace Point.Services.Identity.Application.Services
 {

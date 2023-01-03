@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Application.DTOs.Identity.Interfaces;
-
-namespace Point.Services.Identity.Application.DTOs.Identity;
+﻿namespace Point.Services.Identity.Application.DTOs.Identity;
 
 public class UserClaimsDto<TUserClaimDto, TKey> : UserClaimDto<TKey>, IUserClaimsDto
     where TUserClaimDto : UserClaimDto<TKey>

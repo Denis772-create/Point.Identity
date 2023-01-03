@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Point.Services.Identity.Application.Configuration;
-
-namespace Point.Services.Identity.Application.STS.Helpers;
+﻿namespace Point.Services.Identity.Application.STS.Helpers;
 
 public static class IdentityServerBuilderExtensions
 {

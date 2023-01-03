@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Application.DTOs.Identity.Interfaces;
-
-namespace Point.Services.Identity.Application.DTOs.Identity.Base;
+﻿namespace Point.Services.Identity.Application.DTOs.Identity.Base;
 
 public class BaseUserRolesDto<TKey> : IBaseUserRolesDto
 {

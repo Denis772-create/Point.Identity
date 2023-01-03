@@ -2,13 +2,22 @@
 
 public class AdminConfiguration
 {
+    public string IdentityAdminRedirectUri { get; set; } = string.Empty;
     public string PageTitle { get; set; } = string.Empty;
     public string HomePageLogoUri { get; set; } = string.Empty;
     public string FaviconUri { get; set; } = string.Empty;
     public string AdminBaseUrl { get; set; } = string.Empty;
     public string AdministrationRole { get; set; } = string.Empty;
-
+    public string IdentityAdminCookieName { get; set; } = string.Empty;
+    public string IdentityServerBaseUrl { get; set; } = string.Empty;
     public string Theme { get; set; } = string.Empty;
-
+    public bool RequireHttpsMetadata { get; set; }
+    public double IdentityAdminCookieExpiresUtcHours { get; set; }
+    public string OidcResponseType { get; set; } = string.Empty;
+    public string ClientId { get; set; } = string.Empty;
+    public string ClientSecret { get; set; } = string.Empty;
     public string CustomThemeCss { get; set; } = string.Empty;
+    public string TokenValidationClaimName { get; set; } = string.Empty;
+    public string TokenValidationClaimRole { get; set; } = string.Empty;
+    public string[] Scopes { get; set; } = Array.Empty<string>();
 }

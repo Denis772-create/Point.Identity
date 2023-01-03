@@ -1,7 +1,4 @@
-﻿ 
- 
-
-namespace Point.Services.Identity.Application.DTOs.Identity.Interfaces;
+﻿namespace Point.Services.Identity.Application.DTOs.Identity.Interfaces;
 
 public interface IRolesDto
 {

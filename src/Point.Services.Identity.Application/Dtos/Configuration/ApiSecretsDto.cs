@@ -27,7 +27,7 @@ public class ApiSecretsDto
 
     public HashType HashTypeEnum => Enum.TryParse(HashType, true, out HashType result)
         ? result
-        : Infrastructure.Helpers.HashType.Sha256;
+        : Shared.HashType.Sha256;
 
     public List<SelectItemDto> HashTypes { get; set; }
 

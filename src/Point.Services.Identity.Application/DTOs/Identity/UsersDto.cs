@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Application.DTOs.Identity.Interfaces;
-
-namespace Point.Services.Identity.Application.DTOs.Identity;
+﻿namespace Point.Services.Identity.Application.DTOs.Identity;
 
 public class UsersDto<TUserDto, TKey> : IUsersDto where TUserDto : UserDto<TKey>
 {

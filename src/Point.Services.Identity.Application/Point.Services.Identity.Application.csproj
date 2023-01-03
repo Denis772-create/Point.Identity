@@ -19,8 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Point.Services.Identity.Infrastructure\Point.Services.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\Point.Services.Identity.Domain\Point.Services.Identity.Domain.csproj" />
+    <ProjectReference Include="..\Point.Services.Identity.Shared\Point.Services.Identity.Shared.csproj" />
   </ItemGroup>
+
+
 
   <ItemGroup>
     <Compile Update="Resources\ApiResourceServiceResource.Designer.cs">
