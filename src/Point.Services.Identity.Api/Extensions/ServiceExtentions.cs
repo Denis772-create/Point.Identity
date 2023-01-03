@@ -253,8 +253,6 @@ public static class ServiceExtensions
                 AuthenticationHelpers.CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
         });
 
-        services.AddAuthentication();
-
         AddApiAuthentication(services, configuration);
 
         // TODO: add External Providers

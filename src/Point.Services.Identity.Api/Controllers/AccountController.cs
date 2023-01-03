@@ -11,7 +11,6 @@ public class AccountController<TUser, TKey> : Controller
     private readonly IEmailSender _emailSender;
     private readonly UserManager<TUser> _userManager;
     private readonly IdentityOptions _identityOptions;
-    private readonly UserResolver<TUser> _userResolver;
     private readonly LoginConfiguration _loginConfiguration;
     private readonly ILogger<AccountController<TUser, TKey>> _logger;
     private readonly RegisterConfiguration _registerConfiguration;
@@ -27,7 +26,6 @@ public class AccountController<TUser, TKey> : Controller
         ApplicationSignInManager<TUser> signInManager,
         IGenericControllerLocalizer<AccountController<TUser, TKey>> localizer,
         UserManager<TUser> userManager,
-        UserResolver<TUser> userResolver,
         LoginConfiguration loginConfiguration,
         RegisterConfiguration registerConfiguration,
         IEmailSender emailSender, IdentityOptions identityOptions, ILogger<AccountController<TUser, TKey>> logger)
@@ -38,7 +36,6 @@ public class AccountController<TUser, TKey> : Controller
         _signInManager = signInManager;
         _localizer = localizer;
         _userManager = userManager;
-        _userResolver = userResolver;
         _loginConfiguration = loginConfiguration;
         _registerConfiguration = registerConfiguration;
         _emailSender = emailSender;
