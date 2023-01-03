@@ -11,7 +11,7 @@ using Point.Services.Identity.Infrastructure.DbContexts;
 
 namespace Point.Services.Identity.Infrastructure.Migrations.IdentityServerConfiguration
 {
-    [DbContext(typeof(IdentityServerConfigurationDbContext))]
+    [DbContext(typeof(ServerConfigurationDbContext))]
     [Migration("20221030191129_InitialCreate")]
     partial class InitialCreate
     {

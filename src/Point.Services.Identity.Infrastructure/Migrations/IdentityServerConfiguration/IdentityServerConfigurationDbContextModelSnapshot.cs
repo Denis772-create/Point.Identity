@@ -10,7 +10,7 @@ using Point.Services.Identity.Infrastructure.DbContexts;
 
 namespace Point.Services.Identity.Infrastructure.Migrations.IdentityServerConfiguration
 {
-    [DbContext(typeof(IdentityServerConfigurationDbContext))]
+    [DbContext(typeof(ServerConfigurationDbContext))]
     partial class IdentityServerConfigurationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

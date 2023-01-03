@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Domain;
-
-namespace Point.Services.Identity.Infrastructure.Repositories;
+﻿namespace Point.Services.Identity.Infrastructure.Repositories;
 
 public class KeyRepository<TDbContext> : IKeyRepository
     where TDbContext : DbContext, IAdminPersistedGrantDbContext

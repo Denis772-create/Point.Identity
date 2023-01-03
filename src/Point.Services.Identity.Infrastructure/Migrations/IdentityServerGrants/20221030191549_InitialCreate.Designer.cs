@@ -11,7 +11,7 @@ using Point.Services.Identity.Infrastructure.DbContexts;
 
 namespace Point.Services.Identity.Infrastructure.Migrations.IdentityServerGrants
 {
-    [DbContext(typeof(IdentityServerPersistedGrantDbContext))]
+    [DbContext(typeof(ServerPersistedGrantDbContext))]
     [Migration("20221030191549_InitialCreate")]
     partial class InitialCreate
     {

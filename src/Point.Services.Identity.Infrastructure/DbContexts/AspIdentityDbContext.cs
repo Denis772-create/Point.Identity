@@ -14,12 +14,12 @@ public class AspIdentityDbContext : IdentityDbContext<UserIdentity, UserIdentity
 
     private static void ConfigureIdentityContext(ModelBuilder builder)
     {
-        builder.Entity<UserIdentityRole>().ToTable(TableConsts.IdentityRoles);
-        builder.Entity<UserIdentityRoleClaim>().ToTable(TableConsts.IdentityRoleClaims);
-        builder.Entity<UserIdentityUserRole>().ToTable(TableConsts.IdentityUserRoles);
-        builder.Entity<UserIdentity>().ToTable(TableConsts.IdentityUsers);
-        builder.Entity<UserIdentityLogin>().ToTable(TableConsts.IdentityUserLogins);
-        builder.Entity<UserIdentityUserClaim>().ToTable(TableConsts.IdentityUserClaims);
-        builder.Entity<UserIdentityToken>().ToTable(TableConsts.IdentityUserTokens);
+        builder.Entity<UserIdentityRole>().ToTable(TableIdentityConsts.Roles);
+        builder.Entity<UserIdentityRoleClaim>().ToTable(TableIdentityConsts.RoleClaims);
+        builder.Entity<UserIdentityUserRole>().ToTable(TableIdentityConsts.UserRoles);
+        builder.Entity<UserIdentity>().ToTable(TableIdentityConsts.Users);
+        builder.Entity<UserIdentityLogin>().ToTable(TableIdentityConsts.UserLogins);
+        builder.Entity<UserIdentityUserClaim>().ToTable(TableIdentityConsts.UserClaims);
+        builder.Entity<UserIdentityToken>().ToTable(TableIdentityConsts.UserTokens);
     }
 }

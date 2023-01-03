@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Domain;
-
-namespace Point.Services.Identity.Infrastructure.Repositories;
+﻿namespace Point.Services.Identity.Infrastructure.Repositories;
 
 public class PersistedGrantAspNetIdentityRepository<TIdentityDbContext, TPersistedGrantDbContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     : IPersistedGrantAspNetIdentityRepository

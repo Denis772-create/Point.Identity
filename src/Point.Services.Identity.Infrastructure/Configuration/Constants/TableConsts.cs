@@ -1,13 +1,12 @@
 ﻿namespace Point.Services.Identity.Infrastructure.Configuration.Constants;
 
-public static class TableConsts
+public static class TableIdentityConsts
 {
-    public const string IdentityRoles = "Roles";
-    public const string IdentityRoleClaims = "RoleClaims";
-    public const string IdentityUserRoles = "UserRoles";
-    public const string IdentityUsers = "Users";
-    public const string IdentityUserLogins = "UserLogins";
-    public const string IdentityUserClaims = "UserClaims";
-    public const string IdentityUserTokens = "UserTokens";
+    public const string Roles = "Roles";
+    public const string RoleClaims = "RoleClaims";
+    public const string UserRoles = "UserRoles";
+    public const string Users = "Users";
+    public const string UserLogins = "UserLogins";
+    public const string UserClaims = "UserClaims";
+    public const string UserTokens = "UserTokens";
 }
-

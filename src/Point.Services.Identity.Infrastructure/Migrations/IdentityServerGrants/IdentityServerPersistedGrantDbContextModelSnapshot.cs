@@ -10,7 +10,7 @@ using Point.Services.Identity.Infrastructure.DbContexts;
 
 namespace Point.Services.Identity.Infrastructure.Migrations.IdentityServerGrants
 {
-    [DbContext(typeof(IdentityServerPersistedGrantDbContext))]
+    [DbContext(typeof(ServerPersistedGrantDbContext))]
     partial class IdentityServerPersistedGrantDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

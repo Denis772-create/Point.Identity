@@ -1,9 +1,9 @@
 ﻿namespace Point.Services.Identity.Infrastructure.DbContexts;
 
-public class IdentityServerConfigurationDbContext :
-    ConfigurationDbContext<IdentityServerConfigurationDbContext>, IAdminConfigurationDbContext
+public class ServerConfigurationDbContext :
+    ConfigurationDbContext<ServerConfigurationDbContext>, IAdminConfigurationDbContext
 {
-    public IdentityServerConfigurationDbContext(DbContextOptions<IdentityServerConfigurationDbContext> options)
+    public ServerConfigurationDbContext(DbContextOptions<ServerConfigurationDbContext> options)
         : base(options, new ConfigurationStoreOptions())
     {
     }

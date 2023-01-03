@@ -1,6 +1,4 @@
-﻿using IdentityServer4.EntityFramework.Entities;
-
-namespace Point.Services.Identity.Infrastructure.Repositories;
+﻿namespace Point.Services.Identity.Infrastructure.Repositories;
 
 public class ClientRepository<TDbContext> : IClientRepository
     where TDbContext : DbContext, IAdminConfigurationDbContext

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-
-namespace Point.Services.Identity.Infrastructure.Extensions;
+﻿namespace Point.Services.Identity.Infrastructure.Extensions;
 
 public static class MigrationsHostBuilderExtensions
 {

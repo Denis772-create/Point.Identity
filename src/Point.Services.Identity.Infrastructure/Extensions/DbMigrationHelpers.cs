@@ -1,21 +1,13 @@
-﻿using IdentityModel;
-using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.Extensions.Hosting;
-using Point.Services.Identity.Infrastructure.Configuration;
-using Point.Services.Identity.Infrastructure.DbContexts;
+﻿using Point.Services.Identity.Infrastructure.Configuration;
 
 namespace Point.Services.Identity.Infrastructure.Extensions;
 
 public static class DbMigrationHelpers
 {
 
-    public static async Task ApplyDbMigrationsWithDataSeedAsync<TIdentityServerDbContext, TIdentityDbContext,
-    TPersistedGrantDbContext, TDataProtectionDbContext, TUser, TRole, TKey>(
+    public static async Task ApplyDbMigrationsWithDataSeedAsync<TIdentityServerDbContext, TUser, TRole, TKey>(
     IHost host, SeedConfiguration seedConfiguration, DatabaseMigrationsConfiguration databaseMigrationsConfiguration)
     where TIdentityServerDbContext : DbContext, IAdminConfigurationDbContext
-    where TIdentityDbContext : DbContext
-    where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
-    where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
     where TUser : IdentityUser<TKey>, new()
     where TRole : IdentityRole<TKey>, new()
     where TKey : IEquatable<TKey>
@@ -26,8 +18,8 @@ public static class DbMigrationHelpers
         if (databaseMigrationsConfiguration is { ApplyDatabaseMigrations: true })
         {
             host.MigrateDatabase<AspIdentityDbContext>()
-                .MigrateDatabase<IdentityServerConfigurationDbContext>()
-                .MigrateDatabase<IdentityServerPersistedGrantDbContext>()
+                .MigrateDatabase<ServerConfigurationDbContext>()
+                .MigrateDatabase<ServerPersistedGrantDbContext>()
                 .MigrateDatabase<ProtectionDbContext>();
         }
 

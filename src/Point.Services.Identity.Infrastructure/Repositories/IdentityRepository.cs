@@ -62,11 +62,15 @@ public class IdentityRepository<TIdentityDbContext, TUser, TRole, TKey, TUserCla
         var pagedList = new PagedList<TUser>();
         Expression<Func<TUser, bool>> searchCondition = x => x.UserName.Contains(search) || x.Email.Contains(search);
 
-        var users = await UserManager.Users.WhereIf(!string.IsNullOrEmpty(search), searchCondition).PageBy(x => x.Id, page, pageSize).ToListAsync();
+        var users = await UserManager.Users
+            .WhereIf(!string.IsNullOrEmpty(search), searchCondition)
+            .PageBy(x => x.Id, page, pageSize)
+            .ToListAsync();
 
         pagedList.Data.AddRange(users);
 
-        pagedList.TotalCount = await UserManager.Users.WhereIf(!string.IsNullOrEmpty(search), searchCondition).CountAsync();
+        pagedList.TotalCount = await UserManager.Users
+            .WhereIf(!string.IsNullOrEmpty(search), searchCondition).CountAsync();
         pagedList.PageSize = pageSize;
 
         return pagedList;
