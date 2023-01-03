@@ -150,11 +150,12 @@ public static class ServiceExtensions
 
         // add generic controllers
         services.AddScoped<AccountController<UserIdentity, Guid>>();
+        services.AddScoped<ManageController<UserIdentity, Guid>>();
         services.AddScoped<UsersController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim,
             UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto,
             UserRolesDto, UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimsDto, UserClaimDto, RoleClaimDto>>();
-        services.AddScoped<RolesController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, 
-            UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto, 
+        services.AddScoped<RolesController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim,
+            UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto,
             UserRolesDto, UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimsDto, UserClaimDto, RoleClaimDto>>();
 
         // configure Localization
@@ -252,6 +253,8 @@ public static class ServiceExtensions
                 AuthenticationHelpers.CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
         });
 
+        services.AddAuthentication();
+
         AddApiAuthentication(services, configuration);
 
         // TODO: add External Providers
@@ -327,7 +330,7 @@ public static class ServiceExtensions
     public static IServiceCollection AddIdentityServerAdminConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var options = new IdentityServerAdminUiOptions();
+        var options = new IdentityServerUIOptions();
         options.BindConfiguration(configuration);
 
         services.AddSingleton(options.Admin);

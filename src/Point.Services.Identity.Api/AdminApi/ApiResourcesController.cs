@@ -1,5 +1,4 @@
-﻿using Point.Services.Identity.Web.DTOs.ApiResources;
-using ApiResourcePropertiesDto = Point.Services.Identity.Application.DTOs.Configuration.ApiResourcePropertiesDto;
+﻿using ApiResourcePropertiesDto = Point.Services.Identity.Application.DTOs.Configuration.ApiResourcePropertiesDto;
 
 namespace Point.Services.Identity.Web.AdminApi;
 
@@ -13,7 +12,7 @@ public class ApiResourcesController : ControllerBase
     private readonly IApiResourceService _apiResourceService;
     private readonly IApiErrorResources _errorResources;
 
-    public ApiResourcesController(IApiResourceService apiResourceService, 
+    public ApiResourcesController(IApiResourceService apiResourceService,
         IApiErrorResources errorResources)
     {
         _apiResourceService = apiResourceService;

@@ -1,5 +1,4 @@
-﻿using Point.Services.Identity.Web.DTOs.ApiResources;
-using ApiResourcePropertiesDto = Point.Services.Identity.Web.DTOs.ApiResources.ApiResourcePropertiesDto;
+﻿using ApiResourcePropertiesDto = Point.Services.Identity.Web.DTOs.ApiResources.ApiResourcePropertiesDto;
 using ApiResourcePropertyDto = Point.Services.Identity.Web.DTOs.ApiResources.ApiResourcePropertyDto;
 
 namespace Point.Services.Identity.Web.Mappers;

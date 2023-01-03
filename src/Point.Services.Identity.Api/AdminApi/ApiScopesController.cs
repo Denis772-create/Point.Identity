@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.DTOs.ApiScopes;
-
-namespace Point.Services.Identity.Web.AdminApi;
+﻿namespace Point.Services.Identity.Web.AdminApi;
 
 [Route("api/[controller]")]
 [ApiController]

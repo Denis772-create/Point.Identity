@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.DTOs.ApiScopes;
-
-namespace Point.Services.Identity.Web.Mappers;
+﻿namespace Point.Services.Identity.Web.Mappers;
 
 public class ApiScopeApiMapperProfile : Profile
 {

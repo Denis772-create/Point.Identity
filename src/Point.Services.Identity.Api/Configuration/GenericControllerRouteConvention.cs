@@ -10,6 +10,6 @@ public class GenericControllerRouteConvention : IControllerModelConvention
 
         var name = controller.ControllerType.Name;
         var nameWithoutArity = name[..name.IndexOf('`')];
-        controller.ControllerName = nameWithoutArity[..nameWithoutArity.LastIndexOf("Controller")];
+        controller.ControllerName = nameWithoutArity[..nameWithoutArity.LastIndexOf("Controller", StringComparison.Ordinal)];
     }
 }

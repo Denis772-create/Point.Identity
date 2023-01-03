@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.Helpers;
-
-namespace Point.Services.Identity.Web.AdminApi;
+﻿namespace Point.Services.Identity.Web.AdminApi;
 
 [Route("api/[controller]")]
 [ApiController]
