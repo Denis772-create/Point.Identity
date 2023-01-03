@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Localization;
 
 namespace Point.Services.Identity.Web.Helpers.Localization;
 

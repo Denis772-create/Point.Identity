@@ -12,7 +12,7 @@
 @inject SignInManager<UserIdentity> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-} 
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,12 +33,6 @@
         @await Html.PartialAsync("Common/ThemeResources")
         <link href="~/dist/css/web.min.css" asp-append-version="true" rel="stylesheet" />
     </environment>
-
-    @if (!string.IsNullOrEmpty(RootConfiguration.AdminConfiguration.CustomThemeCss))
-    {
-        <link href="@UrlHelper.Content(RootConfiguration.AdminConfiguration.CustomThemeCss)" asp-append-version="true" rel="stylesheet" />
-    }
-
     @await RenderSectionAsync("styles", required: false)
 </head>
 <body>
@@ -46,7 +40,7 @@
         <!--Site name -->
         <h3 class="menu-logo my-0 mr-md-auto font-weight-normal">
             <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">@RootConfiguration.AdminConfiguration.PageTitle</a>
-        </h3>
+        </h3>   
         <!--Menu item -->
         @if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(name))
         {
@@ -59,7 +53,7 @@
                     @Localizer["Settings"] - @name
                 </button>
                 <div class="dropdown-menu">
-@*                    <a class="dropdown-item" asp-controller="Manage" asp-action="Index">@Localizer["ManageProfile"]</a>
+                    <a class="dropdown-item" asp-controller="Manage" asp-action="Index">@Localizer["ManageProfile"]</a>
                     <a class="dropdown-item" asp-controller="Manage" asp-action="PersonalData">@Localizer["ManagePersonalData"]</a>
                     @if (hasExternalLogins)
                     {
@@ -68,7 +62,7 @@
                     <a class="dropdown-item" asp-controller="Manage" asp-action="TwoFactorAuthentication">@Localizer["2FA"]</a>
                     <a class="dropdown-item" asp-controller="Manage" asp-action="ChangePassword">@Localizer["ChangePassword"]</a>
                     <a class="dropdown-item" asp-controller="Grants" asp-action="Index">@Localizer["Grants"]</a>
-*@                </div>
+                </div>
             </div>
 
             <a class="menu-item my-2 btn btn-outline-primary" asp-action="Logout" asp-controller="Account">@Localizer["Signout"]</a>
@@ -90,9 +84,6 @@
                     <small class="d-block mb-3 text-muted">@DateTime.Now.Year - @await Html.PartialAsync("Common/ApplicationVersion")</small>
                 </div>
                 <div class="col-md-3 text-right">
-                    @await Html.PartialAsync("Common/SelectTheme")
-                </div>
-                <div class="col-md-3 text-right">
                     @await Html.PartialAsync("Common/SelectLanguage")
                 </div>
             </div>
@@ -107,6 +98,5 @@
     </environment>
 
     @await RenderSectionAsync("scripts", required: false)
-
 </body>
 </html>

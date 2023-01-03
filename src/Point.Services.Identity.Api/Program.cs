@@ -67,8 +67,7 @@ public class Program
             .Get<DatabaseMigrationsConfiguration>();
 
         await DbMigrationHelpers
-            .ApplyDbMigrationsWithDataSeedAsync<IdentityServerConfigurationDbContext, AspIdentityDbContext,
-                IdentityServerPersistedGrantDbContext, ProtectionDbContext, UserIdentity, UserIdentityRole, Guid>(host,
-                seedConfiguration, databaseMigrationsConfiguration);
+            .ApplyDbMigrationsWithDataSeedAsync<ServerConfigurationDbContext, UserIdentity, UserIdentityRole, Guid>
+                (host, seedConfiguration, databaseMigrationsConfiguration);
     }
 }

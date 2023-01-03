@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Web.ViewModels.Home;
-
-namespace Point.Services.Identity.Web.Controllers;
+﻿namespace Point.Services.Identity.Web.Controllers;
 
 [SecurityHeaders]
 public class HomeController : Controller
@@ -26,19 +24,6 @@ public class HomeController : Controller
             CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
             new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
         );
-        return LocalRedirect(returnUrl);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult SelectTheme(string theme, string returnUrl)
-    {
-        Response.Cookies.Append(
-            ThemeHelpers.CookieThemeKey,
-            theme,
-            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-        );
-
         return LocalRedirect(returnUrl);
     }
 

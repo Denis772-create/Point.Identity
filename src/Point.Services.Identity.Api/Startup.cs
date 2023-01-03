@@ -12,8 +12,8 @@ public class Startup
         services.AddSingleton(rootConfiguration);
 
         // Register DbContexts for IdentityServer and ASP Identity
-        services.RegisterDbContexts<AspIdentityDbContext, IdentityServerConfigurationDbContext,
-            IdentityServerPersistedGrantDbContext, ProtectionDbContext>(Configuration);
+        services.RegisterDbContexts<AspIdentityDbContext, ServerConfigurationDbContext,
+            ServerPersistedGrantDbContext, ProtectionDbContext>(Configuration);
 
         services.AddDataProtection<ProtectionDbContext>(Configuration);
 
@@ -21,8 +21,8 @@ public class Startup
         services.AddAuthenticationServices<AspIdentityDbContext, UserIdentity,
             UserIdentityRole, UserIdentity, UserIdentityRole>(Configuration);
 
-        services.AddIdentityServer<IdentityServerConfigurationDbContext,
-            IdentityServerPersistedGrantDbContext, UserIdentity>(Configuration);
+        services.AddIdentityServer<ServerConfigurationDbContext,
+            ServerPersistedGrantDbContext, UserIdentity>(Configuration);
 
         services.AddIdentityServerAdminConfiguration(Configuration);
 
@@ -40,14 +40,14 @@ public class Startup
             typeof(IdentityMapperProfile<RoleDto, UserRolesDto, Guid, UserClaimsDto, UserClaimDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimDto, RoleClaimsDto>)
         };
 
-        services.AddAdminAspNetIdentityServices<AspIdentityDbContext, IdentityServerPersistedGrantDbContext,
+        services.AddAdminAspNetIdentityServices<AspIdentityDbContext, ServerPersistedGrantDbContext,
             UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim, UserIdentityUserRole,
             UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken,
             UsersDto, RolesDto, UserRolesDto,
             UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto,
             RoleClaimsDto, UserClaimDto, RoleClaimDto>(profileTypes);
 
-        services.AddAdminServices<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext>();
+        services.AddAdminServices<ServerConfigurationDbContext, ServerPersistedGrantDbContext>();
 
         services.AddSingleton(services.BuildServiceProvider());
 
@@ -117,7 +117,6 @@ public class Startup
             });
         });
     }
-
 
     protected IRootConfiguration CreateRootConfiguration()
     {

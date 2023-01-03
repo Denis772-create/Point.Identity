@@ -10,7 +10,7 @@
 <div class="card-deck mb-3 text-center">
     @if (!User.IsAuthenticated())
     {
-        <div class="card mb-4 box-shadow">
+        <div class="card mb-2 box-shadow">
             <div class="card-header">
                 <h4 class="my-0 font-weight-normal">@Localizer["Login"]</h4>
             </div>
@@ -33,22 +33,10 @@
                 <h1 class="card-title">
                     <span class="oi oi-key" title="@Localizer["Grants"]" aria-hidden="true"></span>
                 </h1>
-@*                <a asp-controller="Grants" asp-action="Index" class="btn btn-lg btn-block btn-primary">@Localizer["Grants"]</a>
-*@            </div>
+                <a asp-controller="Grants" asp-action="Index" class="btn btn-lg btn-block btn-primary">@Localizer["Grants"]</a>
+            </div>
         </div>
     }
-
-    <div class="card mb-4 box-shadow">
-        <div class="card-header">
-            <h4 class="my-0 font-weight-normal">@Localizer["Discovery"]</h4>
-        </div>
-        <div class="card-body">
-            <h1 class="card-title">
-                <span class="oi oi-monitor" title="@Localizer["Discovery"]" aria-hidden="true"></span>
-            </h1>
-            <a href="~/.well-known/openid-configuration" class="btn btn-lg btn-block btn-outline-primary">@Localizer["Discovery"]</a>
-        </div>
-    </div>
 
     @if (User.IsAuthenticated())
     {
@@ -60,8 +48,8 @@
                 <h1 class="card-title">
                     <span class="oi oi-person" title="@Localizer["ManageProfile"]" aria-hidden="true"></span>
                 </h1>
-@*                <a asp-controller="Manage" asp-action="Index" class="btn btn-lg btn-block btn-primary">@Localizer["ManageProfile"]</a>
-*@            </div>
+                <a asp-controller="Manage" asp-action="Index" class="btn btn-lg btn-block btn-primary">@Localizer["ManageProfile"]</a>
+            </div>
         </div>
     }
 </div>
@@ -77,8 +65,8 @@
                 <h1 class="card-title">
                     <span class="oi oi-cloud-download" title="@Localizer["ManagePersonalData"]" aria-hidden="true"></span>
                 </h1>
-@*                <a asp-controller="Manage" asp-action="PersonalData" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ManagePersonalData"]</a>
-*@            </div>
+                <a asp-controller="Manage" asp-action="PersonalData" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ManagePersonalData"]</a>
+            </div>
         </div>
 
         <div class="card mb-4 box-shadow">
@@ -89,8 +77,8 @@
                 <h1 class="card-title">
                     <span class="oi oi-phone" title="@Localizer["2FA"]" aria-hidden="true"></span>
                 </h1>
-@*                <a asp-controller="Manage" asp-action="TwoFactorAuthentication" class="btn btn-lg btn-block btn-primary">@Localizer["2FA"]</a>
-*@            </div>
+                <a asp-controller="Manage" asp-action="TwoFactorAuthentication" class="btn btn-lg btn-block btn-primary">@Localizer["2FA"]</a>
+            </div>
         </div>
 
         <div class="card mb-4 box-shadow">
@@ -101,8 +89,8 @@
                 <h1 class="card-title">
                     <span class="oi oi-pencil" title="@Localizer["ChangePassword"]" aria-hidden="true"></span>
                 </h1>
-@*                <a asp-controller="Manage" asp-action="ChangePassword" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ChangePassword"]</a>
-*@            </div>
+                <a asp-controller="Manage" asp-action="ChangePassword" class="btn btn-lg btn-block btn-outline-primary">@Localizer["ChangePassword"]</a>
+            </div>
         </div>
     </div>
 }
