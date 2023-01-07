@@ -1,11 +1,6 @@
 ﻿namespace Point.Services.Identity.Web.AdminApi;
 
-[Route("api/[controller]")]
-[ApiController]
-[TypeFilter(typeof(ControllerExceptionFilterAttribute))]
-[Produces("application/json")]
-[Authorize(Policy = ConfigurationConsts.AdministrationPolicy)]
-public class PersistedGrantsController : ControllerBase
+public class PersistedGrantsController : AdminApiBaseController
 {
     private readonly IPersistedGrantAspNetIdentityService _persistedGrantsService;
 

@@ -1,13 +1,8 @@
 ﻿namespace Point.Services.Identity.Web.AdminApi;
 
-[Route("api/[controller]")]
-[ApiController]
-[TypeFilter(typeof(ControllerExceptionFilterAttribute))]
-[Produces("application/json", "application/problem+json")]
-[Authorize(Policy = ConfigurationConsts.AdministrationPolicy)]
 public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
-    TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
-    TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto> : ControllerBase
+    TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto, TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto,
+    TRoleClaimsDto, TUserClaimDto, TRoleClaimDto> : AdminApiBaseController
     where TUserDto : UserDto<TKey>, new()
     where TRoleDto : RoleDto<TKey>, new()
     where TUser : IdentityUser<TKey>
@@ -30,21 +25,17 @@ public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
     where TRoleClaimDto : RoleClaimDto<TKey>
 {
     private readonly IIdentityService<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
-        TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
-        TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto> _identityService;
-
+        TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto, TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto,
+        TRoleClaimsDto, TUserClaimDto, TRoleClaimDto> _identityService;
     private readonly IMapper _mapper;
-    private readonly IApiErrorResources _errorResources;
 
     public RolesController(IIdentityService<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
             TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto, TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto,
             TUserClaimDto, TRoleClaimDto> identityService,
-        IMapper mapper,
-        IApiErrorResources errorResources)
+        IMapper mapper, IApiErrorResources errorResources) : base(errorResources)
     {
         _identityService = identityService;
         _mapper = mapper;
-        _errorResources = errorResources;
     }
 
     [HttpGet("{id}")]
@@ -70,7 +61,7 @@ public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
     {
         if (!EqualityComparer<TKey>.Default.Equals(role.Id, default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var (identityResult, roleId) = await _identityService.CreateRoleAsync(role);
@@ -123,7 +114,7 @@ public class RolesController<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
 
         if (!roleClaimsDto.ClaimId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         await _identityService.CreateRoleClaimsAsync(roleClaimsDto);

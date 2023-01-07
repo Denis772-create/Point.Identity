@@ -1,18 +1,12 @@
 ﻿namespace Point.Services.Identity.Web.AdminApi;
 
-[Route("api/[controller]")]
-[ApiController]
-[TypeFilter(typeof(ControllerExceptionFilterAttribute))]
-[Produces("application/json", "application/problem+json")]
-[Authorize(Policy = ConfigurationConsts.AdministrationPolicy)]
-public class ApiScopesController : ControllerBase
+public class ApiScopesController : AdminApiBaseController
 {
-    private readonly IApiErrorResources _errorResources;
     private readonly IApiScopeService _apiScopeService;
 
     public ApiScopesController(IApiErrorResources errorResources, IApiScopeService apiScopeService)
+    : base(errorResources)
     {
-        _errorResources = errorResources;
         _apiScopeService = apiScopeService;
     }
 
@@ -43,7 +37,7 @@ public class ApiScopesController : ControllerBase
 
         if (!apiScope.Id.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var id = await _apiScopeService.AddApiScopeAsync(apiScope);
@@ -82,7 +76,7 @@ public class ApiScopesController : ControllerBase
 
         if (!apiResourcePropertiesDto.ApiScopePropertyId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var propertyId = await _apiScopeService.AddApiScopePropertyAsync(apiResourcePropertiesDto);

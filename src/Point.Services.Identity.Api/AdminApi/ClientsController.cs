@@ -1,19 +1,12 @@
 ﻿namespace Point.Services.Identity.Web.AdminApi;
-
-[Route("api/[controller]")]
-[ApiController]
-[TypeFilter(typeof(ControllerExceptionFilterAttribute))]
-[Produces("application/json", "application/problem+json")]
-[Authorize(Policy = ConfigurationConsts.AdministrationPolicy)]
-public class ClientsController : ControllerBase
+public class ClientsController : AdminApiBaseController
 {
     private readonly IClientService _clientService;
-    private readonly IApiErrorResources _errorResources;
 
     public ClientsController(IClientService clientService, IApiErrorResources errorResources)
+    : base(errorResources)
     {
         _clientService = clientService;
-        _errorResources = errorResources;
     }
 
     [HttpGet]
@@ -43,7 +36,7 @@ public class ClientsController : ControllerBase
 
         if (!clientDto.Id.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var id = await _clientService.AddClientAsync(clientDto);
@@ -117,7 +110,7 @@ public class ClientsController : ControllerBase
 
         if (!secretsDto.ClientSecretId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var secretId = await _clientService.AddClientSecretAsync(secretsDto);
@@ -165,7 +158,7 @@ public class ClientsController : ControllerBase
 
         if (!clientPropertiesDto.ClientPropertyId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var propertyId = await _clientService.AddClientPropertyAsync(clientPropertiesDto);
@@ -213,7 +206,7 @@ public class ClientsController : ControllerBase
 
         if (!clientClaimsDto.ClientClaimId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var claimId = await _clientService.AddClientClaimAsync(clientClaimsDto);

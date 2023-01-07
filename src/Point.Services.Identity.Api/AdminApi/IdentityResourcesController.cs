@@ -1,19 +1,12 @@
 ﻿namespace Point.Services.Identity.Web.AdminApi;
-
-[Route("api/[controller]")]
-[ApiController]
-[TypeFilter(typeof(ControllerExceptionFilterAttribute))]
-[Produces("application/json", "application/problem+json")]
-[Authorize(Policy = ConfigurationConsts.AdministrationPolicy)]
-public class IdentityResourcesController : ControllerBase
+public class IdentityResourcesController : AdminApiBaseController
 {
     private readonly IIdentityResourceService _identityResourceService;
-    private readonly IApiErrorResources _errorResources;
 
-    public IdentityResourcesController(IIdentityResourceService identityResourceService, IApiErrorResources errorResources)
+    public IdentityResourcesController(IIdentityResourceService identityResourceService,
+        IApiErrorResources errorResources) : base(errorResources)
     {
         _identityResourceService = identityResourceService;
-        _errorResources = errorResources;
     }
 
     [HttpGet]
@@ -43,7 +36,7 @@ public class IdentityResourcesController : ControllerBase
 
         if (!identityResourceDto.Id.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var id = await _identityResourceService.AddIdentityResourceAsync(identityResourceDto);
@@ -102,7 +95,7 @@ public class IdentityResourcesController : ControllerBase
 
         if (!identityResourcePropertiesDto.IdentityResourcePropertyId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var propertyId = await _identityResourceService.AddIdentityResourcePropertyAsync(identityResourcePropertiesDto);

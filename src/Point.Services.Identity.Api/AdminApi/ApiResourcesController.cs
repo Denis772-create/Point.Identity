@@ -2,21 +2,14 @@
 
 namespace Point.Services.Identity.Web.AdminApi;
 
-[Route("api/[controller]")]
-[ApiController]
-[TypeFilter(typeof(ControllerExceptionFilterAttribute))]
-[Produces("application/json", "application/problem+json")]
-[Authorize(Policy = ConfigurationConsts.AdministrationPolicy)]
-public class ApiResourcesController : ControllerBase
+public class ApiResourcesController : AdminApiBaseController
 {
     private readonly IApiResourceService _apiResourceService;
-    private readonly IApiErrorResources _errorResources;
 
     public ApiResourcesController(IApiResourceService apiResourceService,
-        IApiErrorResources errorResources)
+        IApiErrorResources errorResources) : base(errorResources)
     {
         _apiResourceService = apiResourceService;
-        _errorResources = errorResources;
     }
 
     [HttpGet]
@@ -46,7 +39,7 @@ public class ApiResourcesController : ControllerBase
 
         if (!apiResourceDto.Id.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var apiResourceId = await _apiResourceService.AddApiResourceAsync(apiResourceDto);
@@ -105,7 +98,7 @@ public class ApiResourcesController : ControllerBase
 
         if (!secretsDto.ApiSecretId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var secretId = await _apiResourceService.AddApiSecretAsync(secretsDto);
@@ -153,7 +146,7 @@ public class ApiResourcesController : ControllerBase
 
         if (!apiResourcePropertiesDto.ApiResourcePropertyId.Equals(default))
         {
-            return BadRequest(_errorResources.CannotSetId());
+            return BadRequest(ErrorResources.CannotSetId());
         }
 
         var propertyId = await _apiResourceService.AddApiResourcePropertyAsync(apiResourcePropertiesDto);
