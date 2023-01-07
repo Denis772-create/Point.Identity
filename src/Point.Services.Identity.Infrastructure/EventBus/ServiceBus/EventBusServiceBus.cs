@@ -1,4 +1,5 @@
 ﻿namespace Point.Services.Identity.Infrastructure.EventBus.ServiceBus;
+
 public class EventBusServiceBus : IEventBus, IAsyncDisposable
 {
     private readonly IServiceBusPersisterConnection _serviceBusPersistentConnection;
@@ -13,7 +14,10 @@ public class EventBusServiceBus : IEventBus, IAsyncDisposable
     private const string IntegrationEventSuffix = "IntegrationEvent";
 
     public EventBusServiceBus(IServiceBusPersisterConnection serviceBusPersistentConnection,
-        ILogger<EventBusServiceBus> logger, IEventBusSubscriptionsManager subsManager, ILifetimeScope autofac, string subscriptionClientName)
+        ILogger<EventBusServiceBus> logger, 
+        IEventBusSubscriptionsManager subsManager, 
+        ILifetimeScope autofac,
+        string subscriptionClientName)
     {
         _serviceBusPersistentConnection = serviceBusPersistentConnection;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -21,16 +25,16 @@ public class EventBusServiceBus : IEventBus, IAsyncDisposable
         _autofac = autofac;
         _subscriptionName = subscriptionClientName;
         _sender = _serviceBusPersistentConnection.TopicClient.CreateSender(TopicName);
-        ServiceBusProcessorOptions options = new ServiceBusProcessorOptions { MaxConcurrentCalls = 10, AutoCompleteMessages = false };
+        var options = new ServiceBusProcessorOptions { MaxConcurrentCalls = 10, AutoCompleteMessages = false };
         _processor = _serviceBusPersistentConnection.TopicClient.CreateProcessor(TopicName, _subscriptionName, options);
 
-        RemoveDefaultRule();
-        RegisterSubscriptionClientMessageHandlerAsync().GetAwaiter().GetResult();
+        //RemoveDefaultRule();
+        //RegisterSubscriptionClientMessageHandlerAsync().GetAwaiter().GetResult();
     }
 
     public void Publish(IntegrationEvent @event)
     {
-        var eventName = @event.GetType().Name.Replace(IntegrationEventSuffix, "");
+        var eventName = @event.Subject ?? @event.GetType().Name.Replace(IntegrationEventSuffix, "");
         var jsonMessage = JsonSerializer.Serialize(@event, @event.GetType());
         var body = Encoding.UTF8.GetBytes(jsonMessage);
 
@@ -101,7 +105,7 @@ public class EventBusServiceBus : IEventBus, IAsyncDisposable
     private async Task RegisterSubscriptionClientMessageHandlerAsync()
     {
         _processor.ProcessMessageAsync +=
-            async (args) =>
+            async args =>
             {
                 var eventName = $"{args.Message.Subject}{IntegrationEventSuffix}";
                 var messageData = args.Message.Body.ToString();
@@ -128,23 +132,26 @@ public class EventBusServiceBus : IEventBus, IAsyncDisposable
 
     private async Task<bool> ProcessEvent(string eventName, string message)
     {
-        var processed = false;
-        if (_subsManager.HasSubscriptionsForEvent(eventName))
+        if (!_subsManager.HasSubscriptionsForEvent(eventName)) return true;
+
+        var scope = _autofac.BeginLifetimeScope(AutofacScopeName);
+        var subscriptions = _subsManager.GetHandlersForEvent(eventName);
+        foreach (var subscription in subscriptions)
         {
-            var scope = _autofac.BeginLifetimeScope(AutofacScopeName);
-            var subscriptions = _subsManager.GetHandlersForEvent(eventName);
-            foreach (var subscription in subscriptions)
-            {
-                var handler = scope.ResolveOptional(subscription.HandlerType);
-                if (handler == null) continue;
-                var eventType = _subsManager.GetEventTypeByName(eventName);
-                var integrationEvent = JsonSerializer.Deserialize(message, eventType);
-                var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                await (Task)concreteType.GetMethod("Handle")?.Invoke(handler, new[] { integrationEvent });
-            }
+            var handler = scope.ResolveOptional(subscription.HandlerType);
+            if (handler == null) continue;
+
+            var eventType = _subsManager.GetEventTypeByName(eventName);
+            var integrationEvent = JsonSerializer.Deserialize(message, eventType);
+            var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+
+            await (Task)concreteType.GetMethod("Handle")?
+                .Invoke(handler, new[]
+                {
+                    integrationEvent
+                })!;
         }
-        processed = true;
-        return processed;
+        return true;
     }
 
     private void RemoveDefaultRule()

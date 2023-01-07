@@ -50,7 +50,6 @@ public class Startup
             .AddEventBus(Configuration)
             .AddSwagger(adminApiConfiguration)
             .AddCors(adminApiConfiguration)
-            .AddEmailSenders(Configuration)
             .AddIdentityServerAdminConfiguration(Configuration)
             .AddCustomHealthCheck(Configuration);
     }

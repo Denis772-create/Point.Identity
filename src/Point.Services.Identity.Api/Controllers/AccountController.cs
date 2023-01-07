@@ -1,6 +1,4 @@
-﻿using Point.Services.Identity.Application.IntegrationEvents.Events;
-
-namespace Point.Services.Identity.Web.Controllers;
+﻿namespace Point.Services.Identity.Web.Controllers;
 
 [Authorize]
 [SecurityHeaders]
@@ -10,7 +8,6 @@ public class AccountController<TUser, TKey> : Controller
 {
     private readonly IEventBus _eventBus;
     private readonly IClientStore _clientStore;
-    private readonly IEmailSender _emailSender;
     private readonly UserManager<TUser> _userManager;
     private readonly IdentityOptions _identityOptions;
     private readonly LoginConfiguration _loginConfiguration;
@@ -30,8 +27,8 @@ public class AccountController<TUser, TKey> : Controller
         UserManager<TUser> userManager,
         LoginConfiguration loginConfiguration,
         RegisterConfiguration registerConfiguration,
-        IEmailSender emailSender, IdentityOptions identityOptions, 
-        ILogger<AccountController<TUser, TKey>> logger, 
+        IdentityOptions identityOptions,
+        ILogger<AccountController<TUser, TKey>> logger,
         IEventBus eventBus)
     {
         _interaction = interaction;
@@ -42,7 +39,6 @@ public class AccountController<TUser, TKey> : Controller
         _userManager = userManager;
         _loginConfiguration = loginConfiguration;
         _registerConfiguration = registerConfiguration;
-        _emailSender = emailSender;
         _identityOptions = identityOptions;
         _logger = logger;
         _eventBus = eventBus;
@@ -207,17 +203,15 @@ public class AccountController<TUser, TKey> : Controller
                 code
             }, HttpContext.Request.Scheme);
 
-            await _emailSender.SendEmailAsync(model.Email,
+            _eventBus.Publish(new EmailSentIntegrationEvent(model.Email,
                 _localizer["ConfirmEmailTitle"],
-                _localizer["ConfirmEmailBody",
-                    HtmlEncoder.Default.Encode(callbackUrl!)]);
+                _localizer["ConfirmEmailBody", HtmlEncoder.Default.Encode(callbackUrl!)]));
 
             if (_identityOptions.SignIn.RequireConfirmedAccount)
             {
                 return View("RegisterConfirmation");
             }
 
-            // TODO: fill this event
             _eventBus.Publish(new AccountCreatedIntegrationEvent(model.UserName, model.Email));
 
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -314,10 +308,8 @@ public class AccountController<TUser, TKey> : Controller
                 code
             }, HttpContext.Request.Scheme);
 
-            await _emailSender.SendEmailAsync(user.Email,
-                _localizer["ResetPasswordTitle"],
-                _localizer["ResetPasswordBody",
-                    HtmlEncoder.Default.Encode(callbackUrl)]);
+            _eventBus.Publish(new EmailSentIntegrationEvent(user.Email, _localizer["ResetPasswordTitle"],
+                _localizer["ResetPasswordBody", HtmlEncoder.Default.Encode(callbackUrl)]));
 
             return View("ForgotPasswordConfirmation");
 

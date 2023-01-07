@@ -1,10 +1,12 @@
 ﻿namespace Point.Services.Identity.Application.IntegrationEvents;
+
 public record IntegrationEvent
 {
-    public IntegrationEvent()
+    public IntegrationEvent(string? subject = null)
     {
         Id = Guid.NewGuid();
         CreationDate = DateTime.UtcNow;
+        Subject = subject;
     }
 
     [JsonConstructor]
@@ -20,5 +22,6 @@ public record IntegrationEvent
     [JsonInclude]
     public DateTime CreationDate { get; private init; }
 
+    public string? Subject { get; }
 }
 

@@ -346,16 +346,6 @@ public static class ServiceExtensions
         return builder;
     }
 
-    public static IServiceCollection AddEmailSenders(this IServiceCollection services, IConfiguration configuration)
-    {
-        var smtpConfiguration = configuration.GetSection(nameof(SmtpConfiguration)).Get<SmtpConfiguration>();
-
-        services.AddSingleton(smtpConfiguration);
-        services.AddTransient<IEmailSender, SmtpEmailSender>();
-        return services;
-    }
-
-
     public static IServiceCollection AddIdentityServerAdminConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {

@@ -1,5 +1,3 @@
-using Point.Services.Identity.Application.IntegrationEvents.Events;
-
 namespace Point.Services.Identity.Web.Controllers;
 
 [Authorize]
@@ -10,7 +8,6 @@ public class ManageController<TUser, TKey> : Controller
     private readonly IEventBus _eventBus;
     private readonly UserManager<TUser> _userManager;
     private readonly SignInManager<TUser> _signInManager;
-    private readonly IEmailSender _emailSender;
     private readonly ILogger<ManageController<TUser, TKey>> _logger;
     private readonly IGenericControllerLocalizer<ManageController<TUser, TKey>> _localizer;
     private readonly UrlEncoder _urlEncoder;
@@ -23,7 +20,6 @@ public class ManageController<TUser, TKey> : Controller
 
     public ManageController(UserManager<TUser> userManager,
         SignInManager<TUser> signInManager,
-        IEmailSender emailSender,
         ILogger<ManageController<TUser, TKey>> logger,
         IGenericControllerLocalizer<ManageController<TUser, TKey>> localizer,
         UrlEncoder urlEncoder,
@@ -31,7 +27,6 @@ public class ManageController<TUser, TKey> : Controller
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _emailSender = emailSender;
         _logger = logger;
         _localizer = localizer;
         _urlEncoder = urlEncoder;
@@ -120,8 +115,8 @@ public class ManageController<TUser, TKey> : Controller
         var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
             HttpContext.Request.Scheme);
 
-        await _emailSender.SendEmailAsync(model.Email, _localizer["ConfirmEmailTitle"],
-            _localizer["ConfirmEmailBody", HtmlEncoder.Default.Encode(callbackUrl)]);
+        _eventBus.Publish(new EmailSentIntegrationEvent(model.Email, _localizer["ConfirmEmailTitle"],
+            _localizer["ConfirmEmailBody", HtmlEncoder.Default.Encode(callbackUrl)]));
 
         StatusMessage = _localizer["VerificationSent"];
 

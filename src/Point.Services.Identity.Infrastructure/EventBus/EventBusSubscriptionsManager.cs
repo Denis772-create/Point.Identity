@@ -50,7 +50,6 @@ public class EventBusSubscriptionsManager : IEventBusSubscriptionsManager
         DoRemoveHandler(eventName, handlerToRemove);
     }
 
-
     private void DoRemoveHandler(string eventName, SubscriptionInfo subsToRemove)
     {
         if (subsToRemove != null)
