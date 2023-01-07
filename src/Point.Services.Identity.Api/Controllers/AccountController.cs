@@ -1,4 +1,6 @@
-﻿namespace Point.Services.Identity.Web.Controllers;
+﻿using Point.Services.Identity.Application.IntegrationEvents.Events;
+
+namespace Point.Services.Identity.Web.Controllers;
 
 [Authorize]
 [SecurityHeaders]
@@ -6,7 +8,7 @@ public class AccountController<TUser, TKey> : Controller
     where TUser : IdentityUser<TKey>, new()
     where TKey : IEquatable<TKey>
 {
-
+    private readonly IEventBus _eventBus;
     private readonly IClientStore _clientStore;
     private readonly IEmailSender _emailSender;
     private readonly UserManager<TUser> _userManager;
@@ -28,7 +30,9 @@ public class AccountController<TUser, TKey> : Controller
         UserManager<TUser> userManager,
         LoginConfiguration loginConfiguration,
         RegisterConfiguration registerConfiguration,
-        IEmailSender emailSender, IdentityOptions identityOptions, ILogger<AccountController<TUser, TKey>> logger)
+        IEmailSender emailSender, IdentityOptions identityOptions, 
+        ILogger<AccountController<TUser, TKey>> logger, 
+        IEventBus eventBus)
     {
         _interaction = interaction;
         _schemeProvider = schemeProvider;
@@ -41,6 +45,7 @@ public class AccountController<TUser, TKey> : Controller
         _emailSender = emailSender;
         _identityOptions = identityOptions;
         _logger = logger;
+        _eventBus = eventBus;
     }
 
     [HttpGet]
@@ -212,6 +217,9 @@ public class AccountController<TUser, TKey> : Controller
                 return View("RegisterConfirmation");
             }
 
+            // TODO: fill this event
+            _eventBus.Publish(new AccountCreatedIntegrationEvent(model.UserName, model.Email));
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             return LocalRedirect(returnUrl);
         }
@@ -240,6 +248,7 @@ public class AccountController<TUser, TKey> : Controller
         {
             return View("Error");
         }
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {

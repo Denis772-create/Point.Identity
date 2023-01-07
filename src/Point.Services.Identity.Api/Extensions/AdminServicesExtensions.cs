@@ -28,7 +28,7 @@ public static class AdminServicesExtensions
     public static IServiceCollection AddAdminAspNetIdentityServices<TIdentityDbContext, TPersistedGrantDbContext, TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,
         TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
         TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto>(
-        this IServiceCollection services, HashSet<Type> profileTypes)
+        this IServiceCollection services)
         where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
         where TIdentityDbContext : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUserDto : UserDto<TKey>
@@ -72,6 +72,11 @@ public static class AdminServicesExtensions
         services.AddScoped<IPersistedGrantAspNetIdentityServiceResources, PersistedGrantAspNetIdentityServiceResources>();
 
         //Register mapping
+        var profileTypes = new HashSet<Type>
+        {
+            typeof(IdentityMapperProfile<RoleDto, UserRolesDto, Guid, UserClaimsDto, UserClaimDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimDto, RoleClaimsDto>)
+        };
+
         services.AddAdminAspNetIdentityMapping()
             .UseIdentityMappingProfile<TUserDto, TRoleDto, TUser, TRole, TKey, TUserClaim,
                 TUserRole, TUserLogin, TRoleClaim, TUserToken,

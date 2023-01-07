@@ -1,3 +1,5 @@
+using Point.Services.Identity.Application.IntegrationEvents.Events;
+
 namespace Point.Services.Identity.Web.Controllers;
 
 [Authorize]
@@ -5,6 +7,7 @@ public class ManageController<TUser, TKey> : Controller
     where TUser : IdentityUser<TKey>, new()
     where TKey : IEquatable<TKey>
 {
+    private readonly IEventBus _eventBus;
     private readonly UserManager<TUser> _userManager;
     private readonly SignInManager<TUser> _signInManager;
     private readonly IEmailSender _emailSender;
@@ -16,14 +19,15 @@ public class ManageController<TUser, TKey> : Controller
     private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     [TempData]
-    public string StatusMessage { get; set; }
+    public string StatusMessage { get; set; } = string.Empty;
 
     public ManageController(UserManager<TUser> userManager,
         SignInManager<TUser> signInManager,
         IEmailSender emailSender,
         ILogger<ManageController<TUser, TKey>> logger,
         IGenericControllerLocalizer<ManageController<TUser, TKey>> localizer,
-        UrlEncoder urlEncoder)
+        UrlEncoder urlEncoder,
+        IEventBus eventBus)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -31,6 +35,7 @@ public class ManageController<TUser, TKey> : Controller
         _logger = logger;
         _localizer = localizer;
         _urlEncoder = urlEncoder;
+        _eventBus = eventBus;
     }
 
     [HttpGet]
@@ -86,6 +91,9 @@ public class ManageController<TUser, TKey> : Controller
         await UpdateUserClaimsAsync(model, user);
 
         StatusMessage = _localizer["ProfileUpdated"];
+
+        _eventBus.Publish(new AccountUpdatedIntegrationEvent(model.Email, model.PhoneNumber, model.Name,
+            model.Website, model.Locality, model.Country));
 
         return RedirectToAction(nameof(Index));
     }
@@ -296,6 +304,8 @@ public class ManageController<TUser, TKey> : Controller
         }
 
         await _signInManager.SignOutAsync();
+
+        _eventBus.Publish(new AccountDeletedIntegrationEvent(user.Email));
 
         _logger.LogInformation(_localizer["DeletePersonalData"], userId);
 

@@ -1,10 +1,39 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Point.Services.Identity.Web.AdminApi;
-
-namespace Point.Services.Identity.Web.Extensions;
+﻿namespace Point.Services.Identity.Web.Extensions;
 
 public static class ServiceExtensions
 {
+    public static IServiceCollection AddHstsOptions(this IServiceCollection services)
+    {
+        services.AddHsts(options =>
+        {
+            options.Preload = true;
+            options.IncludeSubDomains = true;
+            options.MaxAge = TimeSpan.FromDays(365);
+        });
+        return services;
+    }
+    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<IEventBusSubscriptionsManager, EventBusSubscriptionsManager>();
+
+        services.AddSingleton<IServiceBusPersisterConnection>(sp =>
+            new DefaultServiceBusPersistentConnection(configuration["EventBusConnection"]));
+
+        services.AddSingleton<IEventBus, EventBusServiceBus>(sp =>
+        {
+            var serviceBusPersistentConnection = sp.GetRequiredService<IServiceBusPersisterConnection>();
+            var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
+            var logger = sp.GetRequiredService<ILogger<EventBusServiceBus>>();
+            var eventBusSubscriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
+            var subscriptionName = configuration["SubscriptionClientName"];
+
+            return new EventBusServiceBus(serviceBusPersistentConnection, logger,
+                eventBusSubscriptionsManager, iLifetimeScope, subscriptionName);
+        });
+
+        return services;
+    }
+
     public static void UseMvcLocalizationServices(this IApplicationBuilder app)
     {
         var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
@@ -53,7 +82,7 @@ public static class ServiceExtensions
     }
 
 
-    public static void AddAuthorizationPolicies(this IServiceCollection services,
+    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services,
         IRootConfiguration rootConfiguration)
     {
         services.AddAuthorization(options =>
@@ -61,6 +90,7 @@ public static class ServiceExtensions
             options.AddPolicy(ConfigurationConsts.AdministrationPolicy,
                 policy => policy.RequireRole(rootConfiguration.AdminConfiguration.AdministrationRole));
         });
+        return services;
     }
 
     public static IServiceCollection AddCors(this IServiceCollection services, AdminApiConfiguration adminApiConfiguration)
@@ -128,7 +158,7 @@ public static class ServiceExtensions
             .AddControllersWithViews(opt =>
             {
                 opt.Conventions.Add(new GenericControllerRouteConvention());
-                opt.Filters.Add(typeof(HttpGlobalExceptionFilter));
+                opt.Filters.Add(typeof(ControllerExceptionFilterAttribute));
             })
             .AddControllersAsServices()
             .AddNewtonsoftJson()
@@ -316,12 +346,13 @@ public static class ServiceExtensions
         return builder;
     }
 
-    public static void AddEmailSenders(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddEmailSenders(this IServiceCollection services, IConfiguration configuration)
     {
         var smtpConfiguration = configuration.GetSection(nameof(SmtpConfiguration)).Get<SmtpConfiguration>();
 
         services.AddSingleton(smtpConfiguration);
         services.AddTransient<IEmailSender, SmtpEmailSender>();
+        return services;
     }
 
 
