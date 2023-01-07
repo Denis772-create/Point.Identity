@@ -27,7 +27,10 @@ public class ApiResourceService : IApiResourceService
     public virtual async Task<ApiResourceDto> GetApiResourceAsync(int id)
     {
         var apiResource = await _apiResourceRepository.GetApiResource(id);
-        if (apiResource == null) throw new UserFriendlyErrorPageException(ApiResourceServiceResources.ApiResourceDoesNotExist().Description, ApiResourceServiceResources.ApiResourceDoesNotExist().Description);
+        if (apiResource == null) 
+            throw new UserFriendlyErrorPageException(ApiResourceServiceResources.ApiResourceDoesNotExist().Description,
+                ApiResourceServiceResources.ApiResourceDoesNotExist().Description);
+        
         var apiResourceDto = apiResource.ToModel();
 
         //TODO: to create audit log
@@ -86,7 +89,8 @@ public class ApiResourceService : IApiResourceService
     public virtual async Task<ApiSecretsDto> GetApiSecretsAsync(int apiResourceId, int page = 1, int pageSize = 10)
     {
         var apiResource = await _apiResourceRepository.GetApiResource(apiResourceId);
-        if (apiResource == null) throw new UserFriendlyErrorPageException(string.Format(ApiResourceServiceResources.ApiResourceDoesNotExist().Description, apiResourceId),
+        if (apiResource == null) 
+            throw new UserFriendlyErrorPageException(string.Format(ApiResourceServiceResources.ApiResourceDoesNotExist().Description, apiResourceId),
             ApiResourceServiceResources.ApiResourceDoesNotExist().Description);
 
         var pagedList = await _apiResourceRepository.GetApiSecrets(apiResourceId, page, pageSize);
@@ -143,7 +147,8 @@ public class ApiResourceService : IApiResourceService
     public virtual async Task<ApiResourcePropertiesDto> GetApiResourcePropertiesAsync(int apiResourceId, int page = 1, int pageSize = 10)
     {
         var apiResource = await _apiResourceRepository.GetApiResource(apiResourceId);
-        if (apiResource == null) throw new UserFriendlyErrorPageException(string.Format(ApiResourceServiceResources.ApiResourceDoesNotExist().Description, apiResourceId), ApiResourceServiceResources.ApiResourceDoesNotExist().Description);
+        if (apiResource == null) 
+            throw new UserFriendlyErrorPageException(string.Format(ApiResourceServiceResources.ApiResourceDoesNotExist().Description, apiResourceId), ApiResourceServiceResources.ApiResourceDoesNotExist().Description);
 
         var pagedList = await _apiResourceRepository.GetApiResourcePropertiesAsync(apiResourceId, page, pageSize);
         var apiResourcePropertiesDto = pagedList.ToModel();
