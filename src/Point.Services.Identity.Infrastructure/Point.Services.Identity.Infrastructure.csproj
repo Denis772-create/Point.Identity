@@ -8,6 +8,8 @@
 
   <ItemGroup>
 
+	  <PackageReference Include="Autofac" Version="6.4.0" />
+
 	  <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
@@ -25,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj" />
     <ProjectReference Include="..\Point.Services.Identity.Domain\Point.Services.Identity.Domain.csproj" />
   </ItemGroup>
 
