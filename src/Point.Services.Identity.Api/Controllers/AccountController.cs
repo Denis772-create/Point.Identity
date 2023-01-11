@@ -172,7 +172,6 @@ public class AccountController<TUser, TKey> : Controller
         };
     }
 
-
     [HttpPost]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]

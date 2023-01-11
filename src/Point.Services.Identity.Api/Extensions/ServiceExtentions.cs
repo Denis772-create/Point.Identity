@@ -251,8 +251,10 @@ public static class ServiceExtensions
         where TUser : class
 
     {
-        var loginConfiguration = GetLoginConfiguration(configuration);
-        var registrationConfiguration = GetRegistrationConfiguration(configuration);
+        var loginConfiguration = configuration.GetSection(nameof(LoginConfiguration))
+            .Get<LoginConfiguration>() ?? new LoginConfiguration();
+        var registrationConfiguration = configuration.GetSection(nameof(RegisterConfiguration))
+            .Get<RegisterConfiguration>() ?? new RegisterConfiguration();
         var identityOptions = configuration.GetSection(nameof(IdentityOptions))
             .Get<IdentityOptions>() ?? new IdentityOptions();
 
@@ -269,9 +271,6 @@ public static class ServiceExtensions
         services.AddIdentityCore<TUser>(options =>
                 configuration.GetSection(nameof(IdentityOptions)).Bind(options))
             .AddRoles<TRole>();
-
-        services.ConfigureApplicationCookie(options =>
-            options.Cookie.Name = "IdentityServer.Cookies");
 
         services.Configure<CookiePolicyOptions>(options =>
         {
@@ -301,22 +300,6 @@ public static class ServiceExtensions
                  options.RequireHttpsMetadata = adminApiConfiguration.RequireHttpsMetadata;
                  options.Audience = adminApiConfiguration.OidcApiName;
              });
-    }
-
-    private static LoginConfiguration GetLoginConfiguration(IConfiguration configuration)
-    {
-        var loginConfiguration = configuration.GetSection(nameof(LoginConfiguration))
-            .Get<LoginConfiguration>();
-
-        return loginConfiguration ?? new LoginConfiguration();
-    }
-
-    private static RegisterConfiguration GetRegistrationConfiguration(IConfiguration configuration)
-    {
-        var registerConfiguration = configuration.GetSection(nameof(RegisterConfiguration))
-            .Get<RegisterConfiguration>();
-
-        return registerConfiguration ?? new RegisterConfiguration();
     }
 
     public static IIdentityServerBuilder AddIdentityServer<TConfigurationDbContext, TPersistedGrantDbContext, TUserIdentity>(this IServiceCollection services,

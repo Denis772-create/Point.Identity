@@ -50,7 +50,6 @@ public class ApplicationSignInManager<TUser> : SignInManager<TUser>
                 claims.Add(new Claim(JwtClaimTypes.IdentityProvider, authenticationMethod.Value));
             }
         }
-
         await base.SignInWithClaimsAsync(user, authenticationProperties, claims);
     }
 }

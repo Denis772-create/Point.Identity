@@ -97,8 +97,7 @@ public class Startup
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapDefaultControllerRoute()
-                .RequireAuthorization(ConfigurationConsts.AdministrationPolicy);
+            endpoints.MapDefaultControllerRoute();
             endpoints.MapHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,
