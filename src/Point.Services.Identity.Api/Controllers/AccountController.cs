@@ -589,20 +589,16 @@ public class AccountController<TUser, TKey> : Controller
             LogoutId = logoutId
         };
 
-        if (User.Identity?.IsAuthenticated == true)
-        {
-            var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
-            {
-                var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
-                if (providerSupportsSignout)
-                {
-                    vm.LogoutId ??= await _interaction.CreateLogoutContextAsync();
+        if (User.Identity?.IsAuthenticated != true) return vm;
+        var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
 
-                    vm.ExternalAuthenticationScheme = idp;
-                }
-            }
-        }
+        if (idp is null or IdentityServerConstants.LocalIdentityProvider) return vm;
+        var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
+
+        if (!providerSupportsSignout) return vm;
+        vm.LogoutId ??= await _interaction.CreateLogoutContextAsync();
+
+        vm.ExternalAuthenticationScheme = idp;
 
         return vm;
     }
