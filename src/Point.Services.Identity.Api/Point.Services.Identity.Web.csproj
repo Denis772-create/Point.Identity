@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>aa027161-e5c2-4b58-af90-5c9488328d8f</UserSecretsId>
@@ -14,6 +15,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Scripts\App\components\DatePicker.js" />
+	  <Content Include="Scripts\App\components\Picker.es5.js" />
+	  <Content Include="Scripts\App\components\Picker.es5.min.js" />
+	  <Content Include="Scripts\App\components\Picker.js" />
+	  <Content Include="Scripts\App\components\Picker.min.js" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Azure.Identity" Version="1.7.0" />
@@ -22,7 +31,12 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
 		<PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
 		<PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+		<PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
 		<PackageReference Include="Serilog" Version="2.12.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
@@ -31,7 +45,7 @@
 		<PackageReference Include="Serilog" Version="2.11.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.0.0-dev-00265" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,6 +54,83 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="Areas\AdminUI\Views\Account\AccessDenied.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiResource.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiResourceDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiResourceProperties.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiResourcePropertyDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiResources.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiResource\Section\Label.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiScope.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiScopeDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiScopeProperties.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiScopePropertyDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiScopes.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiScope\Section\Label.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiSecretDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ApiSecrets.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientClaimDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientClaims.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientClone.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientProperties.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientPropertyDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Clients.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientSecretDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\ClientSecrets.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\ActionButtons.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\Authentication.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\Basics.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\Consent.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\DeviceFlow.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\Label.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\Name.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Section\Token.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\Client\Settings.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\IdentityResource.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\IdentityResourceDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\IdentityResourceProperties.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\IdentityResourcePropertyDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\IdentityResources.cshtml" />
+		<None Include="Areas\AdminUI\Views\Configuration\IdentityResource\Section\Label.cshtml" />
+		<None Include="Areas\AdminUI\Views\Grant\PersistedGrant.cshtml" />
+		<None Include="Areas\AdminUI\Views\Grant\PersistedGrantDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Grant\PersistedGrants.cshtml" />
+		<None Include="Areas\AdminUI\Views\AdminHome\Error.cshtml" />
+		<None Include="Areas\AdminUI\Views\AdminHome\Index.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\Role.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\RoleClaims.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\RoleClaimsDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\RoleDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\Roles.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\RoleUsers.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\Role\Section\Label.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserChangePassword.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserClaims.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserClaimsDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserProfile.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserProviders.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserProvidersDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserRoles.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\UserRolesDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\Users.cshtml" />
+		<None Include="Areas\AdminUI\Views\Identity\User\Section\Label.cshtml" />
+		<None Include="Areas\AdminUI\Views\Key\KeyDelete.cshtml" />
+		<None Include="Areas\AdminUI\Views\Key\Keys.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\ApplicationVersion.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\ErrorPage.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\Notification.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\Pager.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\PagerDynamic.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\Search.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\SelectLanguage.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Common\ThemeResources.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\Error.cshtml" />
+		<None Include="Areas\AdminUI\Views\Shared\_Layout.cshtml" />
+		<None Include="Areas\AdminUI\Views\_ViewImports.cshtml" />
+		<None Include="Areas\AdminUI\Views\_ViewStart.cshtml" />
 		<None Include="Views\Consent\Index.cshtml" />
 		<None Include="Views\Device\Success.cshtml" />
 		<None Include="Views\Device\UserCodeCapture.cshtml" />
@@ -68,10 +159,12 @@
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>ApiErrorResource.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Areas\AdminUI\Views\AdminHome\Index.en.resx">
+		  <SubType>Designer</SubType>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Helpers\TagHelpers\" />
 		<Folder Include="ViewModels\Consent\" />
 		<Folder Include="ViewModels\Device\" />
 		<Folder Include="ViewModels\Grants\" />

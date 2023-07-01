@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
 namespace Point.Services.Identity.Web.ViewModels.Manage;
 
 public class EnableAuthenticatorViewModel

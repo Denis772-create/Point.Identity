@@ -7,7 +7,7 @@ public static class DatabaseExtensions
         string identityConnectionString, string configurationConnectionString,
         string persistedGrantConnectionString, string dataProtectionConnectionString)
         where TIdentityDbContext : DbContext
-        where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
+        where TPersistedGrantDbContext : DbContext, IPersistedGrantDbContext
         where TConfigurationDbContext : DbContext, IAdminConfigurationDbContext
         where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
     {

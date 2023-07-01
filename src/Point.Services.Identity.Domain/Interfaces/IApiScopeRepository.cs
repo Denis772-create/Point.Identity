@@ -2,6 +2,8 @@
 
 public interface IApiScopeRepository
 {
+    Task<ICollection<string>> GetApiScopesNameAsync(string scope, int limit = 0);
+
     // Scopes
     Task<PagedList<ApiScope>> GetApiScopes(string search, int page = 1, int pageSize = 10);
     Task<ApiScope?> GetApiScope(int apiScopeId);

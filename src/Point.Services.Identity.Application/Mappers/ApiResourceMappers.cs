@@ -1,5 +1,4 @@
-﻿using IdentityServer4.EntityFramework.Mappers;
-using ApiResource = IdentityServer4.EntityFramework.Entities.ApiResource;
+﻿using ApiResource = IdentityServer4.EntityFramework.Entities.ApiResource;
 
 namespace Point.Services.Identity.Application.Mappers;
 

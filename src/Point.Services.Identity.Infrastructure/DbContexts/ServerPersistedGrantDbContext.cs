@@ -7,5 +7,5 @@ public class ServerPersistedGrantDbContext : PersistedGrantDbContext<ServerPersi
     {
     }
 
-    public DbSet<Key> Keys { get; set; } =  null!;
+    public DbSet<Key> Keys { get; set; }
 }

@@ -1,4 +1,4 @@
-namespace Point.Services.Identity.Web.Helpers.TagHelpers;
+﻿namespace Point.Services.Identity.Web.Helpers.TagHelpers;
 
 [HtmlTargetElement("img-gravatar")]
 public class GravatarTagHelper : TagHelper
@@ -17,23 +17,24 @@ public class GravatarTagHelper : TagHelper
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        if (string.IsNullOrWhiteSpace(Email)) return;
-
-        var hash = Md5HashHelper.GetHash(Email);
-
-        output.TagName = "img";
-        if (!string.IsNullOrWhiteSpace(Class))
+        if (!string.IsNullOrWhiteSpace(Email))
         {
-            output.Attributes.Add("class", Class);
-        }
+            var hash = Md5HashHelper.GetHash(Email);
 
-        if (!string.IsNullOrWhiteSpace(Alt))
-        {
-            output.Attributes.Add("alt", Alt);
-        }
+            output.TagName = "img";
+            if (!string.IsNullOrWhiteSpace(Class))
+            {
+                output.Attributes.Add("class", Class); 
+            }
 
-        output.Attributes.Add("src", GetAvatarUrl(hash, Size));
-        output.TagMode = TagMode.SelfClosing;
+            if (!string.IsNullOrWhiteSpace(Alt))
+            {
+                output.Attributes.Add("alt", Alt);
+            }
+                
+            output.Attributes.Add("src", GetAvatarUrl(hash, Size));
+            output.TagMode = TagMode.SelfClosing;
+        } 
     }
 
     private static string GetAvatarUrl(string hash, int size)

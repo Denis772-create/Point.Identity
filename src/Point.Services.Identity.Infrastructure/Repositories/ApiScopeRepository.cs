@@ -30,6 +30,16 @@ public class ApiScopeRepository<TDbContext> : IApiScopeRepository
         return pagedList;
     }
 
+    public virtual async Task<ICollection<string>> GetApiScopesNameAsync(string scope, int limit = 0)
+    {
+        var apiScopes = await DbContext.ApiScopes
+            .WhereIf(!string.IsNullOrEmpty(scope), x => x.Name.Contains(scope))
+            .TakeIf(x => x.Id, limit > 0, limit)
+            .Select(x => x.Name).ToListAsync();
+
+        return apiScopes;
+    }
+
     public virtual async Task<ApiScope?> GetApiScope(int apiScopeId)
     {
         return await DbContext.ApiScopes

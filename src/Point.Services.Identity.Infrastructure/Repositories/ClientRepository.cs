@@ -1,4 +1,8 @@
-﻿namespace Point.Services.Identity.Infrastructure.Repositories;
+﻿using IdentityServer4.Models;
+using Client = IdentityServer4.EntityFramework.Entities.Client;
+using ClientClaim = IdentityServer4.EntityFramework.Entities.ClientClaim;
+
+namespace Point.Services.Identity.Infrastructure.Repositories;
 
 public class ClientRepository<TDbContext> : IClientRepository
     where TDbContext : DbContext, IAdminConfigurationDbContext
@@ -49,6 +53,34 @@ public class ClientRepository<TDbContext> : IClientRepository
             .Where(x => x.Id == clientId)
             .AsNoTracking()
             .SingleOrDefaultAsync();
+    }
+
+    public virtual List<string> GetSigningAlgorithms(string algorithm, int limit = 0)
+    {
+        var signingAlgorithms = ClientConsts.SigningAlgorithms()
+            .WhereIf(!string.IsNullOrWhiteSpace(algorithm), x => x.Contains(algorithm))
+            .TakeIf(x => x, limit > 0, limit)
+            .OrderBy(x => x)
+            .ToList();
+
+        return signingAlgorithms;
+    }
+
+    public virtual async Task<List<string>> GetScopesAsync(string scope, int limit = 0)
+    {
+        var identityResources = await DbContext.IdentityResources
+            .WhereIf(!string.IsNullOrEmpty(scope), x => x.Name.Contains(scope))
+            .TakeIf(x => x.Id, limit > 0, limit)
+            .Select(x => x.Name).ToListAsync();
+
+        var apiScopes = await DbContext.ApiScopes
+            .WhereIf(!string.IsNullOrEmpty(scope), x => x.Name.Contains(scope))
+            .TakeIf(x => x.Id, limit > 0, limit)
+            .Select(x => x.Name).ToListAsync();
+
+        var scopes = identityResources.Concat(apiScopes).TakeIf(x => x, limit > 0, limit).ToList();
+
+        return scopes;
     }
 
     public virtual async Task<PagedList<Client>> GetClients(string search = "", int page = 1, int pageSize = 10)
@@ -288,6 +320,64 @@ public class ClientRepository<TDbContext> : IClientRepository
             DbContext.ClientProperties.RemoveRange(clientProperties);
         }
     }
+
+    public virtual List<SelectItem> GetProtocolTypes()
+    {
+        return ClientConsts.GetProtocolTypes();
+    }
+
+    public virtual List<SelectItem> GetSecretTypes()
+    {
+        var secrets = new List<SelectItem>();
+        secrets.AddRange(ClientConsts.GetSecretTypes().Select(x => new SelectItem(x, x)));
+
+        return secrets;
+    }
+
+    public virtual List<SelectItem> GetAccessTokenTypes()
+    {
+        var accessTokenTypes = EnumHelpers.ToSelectList<AccessTokenType>();
+        return accessTokenTypes;
+    }
+
+    public virtual List<SelectItem> GetTokenExpirations()
+    {
+        var tokenExpirations = EnumHelpers.ToSelectList<TokenExpiration>();
+        return tokenExpirations;
+    }
+
+    public virtual List<SelectItem> GetTokenUsage()
+    {
+        var tokenUsage = EnumHelpers.ToSelectList<TokenUsage>();
+        return tokenUsage;
+    }
+
+    public virtual List<SelectItem> GetHashTypes()
+    {
+        var hashTypes = EnumHelpers.ToSelectList<HashType>();
+        return hashTypes;
+    }
+
+    public virtual List<string> GetStandardClaims(string claim, int limit = 0)
+    {
+        var filteredClaims = ClientConsts.GetStandardClaims()
+            .WhereIf(!string.IsNullOrWhiteSpace(claim), x => x.Contains(claim))
+            .TakeIf(x => x, limit > 0, limit)
+            .ToList();
+
+        return filteredClaims;
+    }
+
+    public virtual List<string> GetGrantTypes(string grant, int limit = 0)
+    {
+        var filteredGrants = ClientConsts.GetGrantTypes()
+            .WhereIf(!string.IsNullOrWhiteSpace(grant), x => x.Contains(grant))
+            .TakeIf(x => x, limit > 0, limit)
+            .ToList();
+
+        return filteredGrants;
+    }
+
 
     protected virtual async Task<int> AutoSaveChangesAsync()
     {

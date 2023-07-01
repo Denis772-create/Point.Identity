@@ -37,4 +37,17 @@ public interface IClientRepository
     Task<ClientClaim?> GetClientClaim(int clientClaimId);
     Task<int> AddClientClaim(int clientId, ClientClaim clientClaim);
     Task<int> DeleteClientClaimAsync(ClientClaim clientClaim);
+
+
+
+    List<SelectItem> GetProtocolTypes();
+    List<SelectItem> GetAccessTokenTypes();
+    List<string> GetGrantTypes(string grant, int limit = 0);
+    List<SelectItem> GetTokenExpirations();
+    List<SelectItem> GetTokenUsage();
+    List<SelectItem> GetHashTypes();
+    Task<List<string>> GetScopesAsync(string scope, int limit = 0);
+    List<SelectItem> GetSecretTypes();
+    List<string> GetStandardClaims(string claim, int limit = 0);
+    List<string> GetSigningAlgorithms(string algorithm, int limit = 0);
 }

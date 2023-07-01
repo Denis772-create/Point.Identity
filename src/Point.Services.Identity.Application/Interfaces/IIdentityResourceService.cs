@@ -2,6 +2,8 @@
 
 public interface IIdentityResourceService
 {
+    IdentityResourceDto BuildIdentityResourceViewModel(IdentityResourceDto identityResource);
+
     Task<IdentityResourcesDto> GetIdentityResourcesAsync(string search, int page = 1, int pageSize = 10);
     Task<IdentityResourceDto> GetIdentityResourceAsync(int identityResourceId);
     Task<bool> CanInsertIdentityResourceAsync(IdentityResourceDto identityResource);

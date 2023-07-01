@@ -2,6 +2,8 @@
 
 public interface IApiResourceService
 {
+    ApiSecretsDto BuildApiSecretsViewModel(ApiSecretsDto apiSecrets);
+
     // Resources
     Task<ApiResourcesDto> GetApiResourcesAsync(string search, int page = 1, int pageSize = 10);
     Task<ApiResourceDto> GetApiResourceAsync(int id);

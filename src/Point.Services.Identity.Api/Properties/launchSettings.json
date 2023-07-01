@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Point.Services.Identity.Web": {
+    "Point.Services.Identity.Web Dev": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -9,6 +9,17 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7097"
+    },
+    "Point.Services.Identity.Web QA": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "QA"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7097"
     }
+
   }
 }

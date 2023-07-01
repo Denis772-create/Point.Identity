@@ -2,6 +2,19 @@
 
 public interface IClientService
 {
+    ClientDto BuildClientViewModel(ClientDto client = null);
+
+    ClientSecretsDto BuildClientSecretsViewModel(ClientSecretsDto clientSecrets);
+
+    ClientCloneDto BuildClientCloneViewModel(int id, ClientDto clientDto);
+    List<string> GetStandardClaims(string claim, int limit = 0);
+    List<string> GetGrantTypes(string grant, int limit = 0);
+    Task<List<string>> GetScopesAsync(string scope, int limit = 0);
+    List<string> GetSigningAlgorithms(string algorithm, int limit = 0);
+    List<SelectItemDto> GetHashTypes();
+    List<SelectItemDto> GetSecretTypes();
+
+
     // Clients
     Task<ClientDto> GetClientAsync(int clientId);
     Task<ClientsDto> GetClientsAsync(string search, int page = 1, int pageSize = 10);

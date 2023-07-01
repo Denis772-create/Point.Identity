@@ -44,6 +44,9 @@ public class Startup
             UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto,
             RoleClaimsDto, UserClaimDto, RoleClaimDto>(Configuration);
 
+        // Adds the IdentityServer Admin UI with custom options.
+        services.AddIdentityServerAdminUI(Configuration);
+
         services
             .AddAuthorizationPolicies(CreateRootConfiguration())
             .AddHstsOptions()
@@ -54,7 +57,8 @@ public class Startup
             .AddCustomHealthCheck(Configuration);
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AdminApiConfiguration adminApiConfiguration)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+        AdminApiConfiguration adminApiConfiguration, SecurityConfiguration securityConfiguration)
     {
         app.UseCookiePolicy();
 
@@ -72,6 +76,8 @@ public class Startup
         app.UsePathBase(Configuration.GetValue<string>("BasePath"));
 
         app.UseStaticFiles();
+
+        app.UseSecurityHeaders(securityConfiguration.CspTrustedDomains);
 
         app.UseRouting();
 
@@ -98,6 +104,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapDefaultControllerRoute();
+            endpoints.MapIdentityServerAdminUi();
             endpoints.MapHealthChecks("/hc", new HealthCheckOptions
             {
                 Predicate = _ => true,

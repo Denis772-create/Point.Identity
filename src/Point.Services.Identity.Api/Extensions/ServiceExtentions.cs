@@ -90,6 +90,7 @@ public static class ServiceExtensions
             options.AddPolicy(ConfigurationConsts.AdministrationPolicy,
                 policy => policy.RequireRole(rootConfiguration.AdminConfiguration.AdministrationRole));
         });
+
         return services;
     }
 
@@ -187,7 +188,10 @@ public static class ServiceExtensions
         services.AddScoped<RolesController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim,
             UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto,
             UserRolesDto, UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimsDto, UserClaimDto, RoleClaimDto>>();
-
+        services.AddScoped<IdentityController<UserDto, RoleDto, UserIdentity, UserIdentityRole, Guid, UserIdentityUserClaim,
+            UserIdentityUserRole, UserIdentityLogin, UserIdentityRoleClaim, UserIdentityToken, UsersDto, RolesDto,
+            UserRolesDto, UserClaimsDto, UserProviderDto, UserProvidersDto, UserChangePasswordDto, RoleClaimsDto, UserClaimDto, RoleClaimDto>>();
+        
         // configure Localization
         var cultureConfiguration = configuration.GetSection(nameof(CultureConfiguration))
             .Get<CultureConfiguration>();
@@ -299,6 +303,12 @@ public static class ServiceExtensions
                  options.Authority = adminApiConfiguration.IdentityServerBaseUrl;
                  options.RequireHttpsMetadata = adminApiConfiguration.RequireHttpsMetadata;
                  options.Audience = adminApiConfiguration.OidcApiName;
+
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     NameClaimType = JwtClaimTypes.Name,
+                     RoleClaimType = JwtClaimTypes.Role
+                 };
              });
     }
 
@@ -341,4 +351,98 @@ public static class ServiceExtensions
 
         return services;
     }
+
+    public static IEndpointConventionBuilder MapIdentityServerAdminUi(this IEndpointRouteBuilder endpoint, string patternPrefix = "/")
+    {
+        return endpoint.MapAreaControllerRoute(CommonConsts.AdminUIArea, CommonConsts.AdminUIArea, patternPrefix + "{controller=AdminHome}/{action=Index}/{id?}");
+    }
+
+    public static IServiceCollection AddIdentityServerAdminUI(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Builds the options from user preferences or configuration.
+        var options = new IdentityServerAdminUIOptions();
+        options.BindConfiguration(configuration);
+
+        // Adds root configuration to the DI.
+        services.AddSingleton(options.Admin);
+
+        // Adds a startup filter for further middleware configuration.
+        services.AddSingleton(options.Security);
+        services.AddSingleton(options.Http);
+
+        services.AddMvcExceptionFilters();
+        services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
+        return services;
+    }
+
+    public static void AddMvcExceptionFilters(this IServiceCollection services)
+    {
+        //Exception handling
+        services.AddScoped<ControllerExceptionFilterAttribute>();
+    }
+
+    public static void UseSecurityHeaders(this IApplicationBuilder app, List<string> cspTrustedDomains)
+    {
+        var forwardingOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.All
+        };
+
+        forwardingOptions.KnownNetworks.Clear();
+        forwardingOptions.KnownProxies.Clear();
+
+        app.UseForwardedHeaders(forwardingOptions);
+
+        app.UseXXssProtection(options => options.EnabledWithBlockMode());
+        app.UseXContentTypeOptions();
+        app.UseXfo(options => options.SameOrigin());
+        app.UseReferrerPolicy(options => options.NoReferrer());
+
+        // CSP Configuration to be able to use external resources
+        if (cspTrustedDomains != null && cspTrustedDomains.Any())
+        {
+            app.UseCsp(csp =>
+            {
+                var imagesCustomSources = new List<string>();
+                imagesCustomSources.AddRange(cspTrustedDomains);
+                imagesCustomSources.Add("data:");
+
+                csp.ImageSources(options =>
+                {
+                    options.SelfSrc = true;
+                    options.CustomSources = imagesCustomSources;
+                    options.Enabled = true;
+                });
+                csp.FontSources(options =>
+                {
+                    options.SelfSrc = true;
+                    options.CustomSources = cspTrustedDomains;
+                    options.Enabled = true;
+                });
+                csp.ScriptSources(options =>
+                {
+                    options.SelfSrc = true;
+                    options.CustomSources = cspTrustedDomains;
+                    options.Enabled = true;
+                    options.UnsafeInlineSrc = true;
+                    options.UnsafeEvalSrc = true;
+                });
+                csp.StyleSources(options =>
+                {
+                    options.SelfSrc = true;
+                    options.CustomSources = cspTrustedDomains;
+                    options.Enabled = true;
+                    options.UnsafeInlineSrc = true;
+                });
+                csp.DefaultSources(options =>
+                {
+                    options.SelfSrc = true;
+                    options.CustomSources = cspTrustedDomains;
+                    options.Enabled = true;
+                });
+            });
+        }
+    }
+
 }

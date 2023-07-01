@@ -1,5 +1,4 @@
-﻿using IdentityServer4.EntityFramework.Mappers;
-using Client = IdentityServer4.EntityFramework.Entities.Client;
+﻿using Client = IdentityServer4.EntityFramework.Entities.Client;
 using ClientClaim = IdentityServer4.EntityFramework.Entities.ClientClaim;
 
 namespace Point.Services.Identity.Application.Mappers;

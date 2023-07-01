@@ -32,6 +32,7 @@ global using Point.Services.Identity.Application.Helpers;
 global using Point.Services.Identity.Application.IntegrationEvents;
 global using Point.Services.Identity.Application.Interfaces;
 global using Point.Services.Identity.Application.Mappers;
+global using Point.Services.Identity.Application.Mappers.Converters;
 global using Point.Services.Identity.Application.Resources;
 global using Point.Services.Identity.Application.Services;
 global using Point.Services.Identity.Domain.Interfaces;

@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Application", "src\Point.Services.Identity.Application\Point.Services.Identity.Application.csproj", "{3B096530-803D-49FD-BAD4-55F286E51676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Point.Services.Identity.Shared", "src\Point.Services.Identity.Shared\Point.Services.Identity.Shared.csproj", "{BEBCD9E4-B746-468F-8D55-05B40F2A35B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Point.Services.Identity.Shared", "src\Point.Services.Identity.Shared\Point.Services.Identity.Shared.csproj", "{BEBCD9E4-B746-468F-8D55-05B40F2A35B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

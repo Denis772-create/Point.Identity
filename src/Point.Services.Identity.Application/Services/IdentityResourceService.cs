@@ -12,6 +12,13 @@ public class IdentityResourceService : IIdentityResourceService
         IdentityResourceServiceResources = identityResourceServiceResources;
     }
 
+    public virtual IdentityResourceDto BuildIdentityResourceViewModel(IdentityResourceDto identityResource)
+    {
+        ComboBoxHelpers.PopulateValuesToList(identityResource.UserClaimsItems, identityResource.UserClaims);
+
+        return identityResource;
+    }
+
     public virtual async Task<IdentityResourcesDto> GetIdentityResourcesAsync(string search, int page = 1, int pageSize = 10)
     {
         var pagedList = await _identityResourceRepository.GetIdentityResources(search, page, pageSize);
