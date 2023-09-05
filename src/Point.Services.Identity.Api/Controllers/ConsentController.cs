@@ -30,6 +30,34 @@ public class ConsentController : Controller
         return vm != null ? View("Index", vm) : View("Error");
     }
 
+
+    /// <summary>
+    /// Handles the consent screen postback
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index(ConsentInputModel model)
+    {
+        var result = await ProcessConsent(model);
+
+        if (result.IsRedirect)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            return context?.IsNativeClient() == true
+                ? this.LoadingPage("Redirect", result.RedirectUri)
+                : Redirect(result.RedirectUri);
+        }
+
+        if (result.HasValidationError)
+        {
+            ModelState.AddModelError(string.Empty, result.ValidationError);
+        }
+
+        return result.ShowView
+            ? View("Index", result.ViewModel)
+            : View("Error");
+    }
+
     private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
     {
         var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
@@ -126,5 +154,71 @@ public class ConsentController : Controller
             Emphasize = true,
             Checked = check
         };
+    }
+
+    private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
+    {
+        var result = new ProcessConsentResult();
+
+        // validate return url is still valid
+        var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+        if (request == null) return result;
+
+        ConsentResponse grantedConsent = null;
+
+        // user clicked 'no' - send back the standard 'access_denied' response
+        if (model?.Button == "no")
+        {
+            grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
+
+            // TODO: rise event
+        }
+        // user clicked 'yes' - validate the data
+        else if (model?.Button == "yes")
+        {
+            // if the user consented to some scope, build the response model
+            if (model.ScopesConsented != null && model.ScopesConsented.Any())
+            {
+                var scopes = model.ScopesConsented;
+                if (ConsentOptions.EnableOfflineAccess == false)
+                {
+                    scopes = scopes.Where(x => x != IdentityServerConstants.StandardScopes.OfflineAccess);
+                }
+
+                grantedConsent = new ConsentResponse
+                {
+                    RememberConsent = model.RememberConsent,
+                    ScopesValuesConsented = scopes.ToArray(),
+                    Description = model.Description
+                };
+
+                // TODO: rise event
+            }
+            else
+            {
+                result.ValidationError = ConsentOptions.MustChooseOneErrorMessage;
+            }
+        }
+        else
+        {
+            result.ValidationError = ConsentOptions.InvalidSelectionErrorMessage;
+        }
+
+        if (grantedConsent != null)
+        {
+            // communicate outcome of consent back to identityserver
+            await _interaction.GrantConsentAsync(request, grantedConsent);
+
+            // indicate that's it ok to redirect back to authorization endpoint
+            result.RedirectUri = model.ReturnUrl;
+            result.Client = request.Client;
+        }
+        else
+        {
+            // we need to redisplay the consent UI
+            result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
+        }
+
+        return result;
     }
 }

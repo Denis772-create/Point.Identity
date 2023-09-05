@@ -5,6 +5,7 @@ public class ApiScopeDto
     public ApiScopeDto()
     {
         UserClaims = new List<string>();
+        ApiScopeProperties = new List<ApiScopePropertyDto>();
     }
 
     public bool ShowInDiscoveryDocument { get; set; } = true;

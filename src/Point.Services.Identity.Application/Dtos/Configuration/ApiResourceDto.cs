@@ -24,15 +24,15 @@ public class ApiResourceDto
 
     public List<string> UserClaims { get; set; }
 
-    public string UserClaimsItems { get; set; }
+    public string? UserClaimsItems { get; set; }
 
     public bool ShowInDiscoveryDocument { get; set; }
 
     public List<string> AllowedAccessTokenSigningAlgorithms { get; set; }
 
-    public string AllowedAccessTokenSigningAlgorithmsItems { get; set; }
+    public string? AllowedAccessTokenSigningAlgorithmsItems { get; set; }
 
     public List<string> Scopes { get; set; }
 
-    public string ScopesItems { get; set; }
+    public string? ScopesItems { get; set; }
 }
