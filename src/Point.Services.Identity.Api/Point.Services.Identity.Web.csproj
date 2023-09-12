@@ -11,10 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<_ContentIncludedByDefault Remove="appsettings.Production.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Include="Scripts\App\components\DatePicker.js" />
 	  <Content Include="Scripts\App\components\Picker.es5.js" />
 	  <Content Include="Scripts\App\components\Picker.es5.min.js" />
